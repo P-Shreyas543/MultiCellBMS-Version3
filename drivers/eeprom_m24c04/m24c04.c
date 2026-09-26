@@ -198,3 +198,191 @@ uint8_t M24C04_ComputeCRC8(const uint8_t *data, uint16_t length)
 
     return (uint8_t)(crc ^ 0xFFU);
 }
+
+/* ========================================================================== */
+/* Extended Automotive & EEPROM Feature Implementations                       */
+/* ========================================================================== */
+
+uint8_t M24C04_WriteByte(uint16_t mem_addr, uint8_t byte_val)
+{
+    uint8_t buf = byte_val;
+    return M24C04_Write(mem_addr, &buf, 1U);
+}
+
+uint8_t M24C04_ReadByte(uint16_t mem_addr, uint8_t *byte_val)
+{
+    if (byte_val == NULL) {
+        return (uint8_t)M24C04_STATUS_PARAM_ERROR;
+    }
+    uint8_t buf[M24C04_MAX_BUFFER_SIZE];
+    uint8_t status = M24C04_Read(mem_addr, buf, 1U);
+    if (status == (uint8_t)M24C04_STATUS_OK) {
+        *byte_val = buf[0];
+    }
+    return status;
+}
+
+uint8_t M24C04_WriteMulti(uint16_t mem_addr, const uint8_t *data, uint16_t length)
+{
+    if ((data == NULL) || (length == 0U) || ((mem_addr + length) > M24C04_TOTAL_SIZE)) {
+        return (uint8_t)M24C04_STATUS_PARAM_ERROR;
+    }
+
+    uint16_t bytes_written = 0U;
+    while (bytes_written < length) {
+        uint16_t current_addr = mem_addr + bytes_written;
+        /* Remaining bytes in current 16-byte physical page */
+        uint16_t page_offset = current_addr % M24C04_PAGE_SIZE;
+        uint16_t chunk = M24C04_PAGE_SIZE - page_offset;
+        if (chunk > (length - bytes_written)) {
+            chunk = length - bytes_written;
+        }
+
+#if M24C04_IS_SIMULATION
+        M24C04_SimInitIfNeeded();
+        memcpy(&s_eeprom_sim_mem[current_addr], &data[bytes_written], chunk);
+#else
+        uint8_t dev_addr = (uint8_t)(M24C04_BASE_ADDR | ((current_addr >> 8U) & 0x01U));
+        uint8_t word_addr = (uint8_t)(current_addr & 0xFFU);
+        uint8_t tx_buf[M24C04_PAGE_SIZE + 1U];
+        tx_buf[0] = word_addr;
+        memcpy(&tx_buf[1], &data[bytes_written], chunk);
+
+        status_t status = LPI2C_DRV_MasterSendDataBlocking(
+            s_m24c04_i2c_instance, tx_buf, (uint32_t)(chunk + 1U), true, M24C04_WRITE_TIMEOUT_MS);
+        if (status != STATUS_SUCCESS) {
+            return (uint8_t)M24C04_STATUS_ERROR;
+        }
+        OSIF_TimeDelay(M24C04_WRITE_CYCLE_DELAY_MS);
+#endif
+        bytes_written += chunk;
+    }
+
+    return (uint8_t)M24C04_STATUS_OK;
+}
+
+uint8_t M24C04_ReadMulti(uint16_t mem_addr, uint8_t *data, uint16_t length)
+{
+    if ((data == NULL) || (length == 0U) || ((mem_addr + length) > M24C04_TOTAL_SIZE)) {
+        return (uint8_t)M24C04_STATUS_PARAM_ERROR;
+    }
+
+#if M24C04_IS_SIMULATION
+    M24C04_SimInitIfNeeded();
+    memcpy(data, &s_eeprom_sim_mem[mem_addr], length);
+    return (uint8_t)M24C04_STATUS_OK;
+#else
+    uint16_t bytes_read = 0U;
+    while (bytes_read < length) {
+        uint16_t current_addr = mem_addr + bytes_read;
+        /* Stay within 256-byte block boundary for sequential read */
+        uint16_t block_remaining = 256U - (current_addr & 0xFFU);
+        uint16_t chunk = (length - bytes_read < block_remaining) ? (length - bytes_read) : block_remaining;
+
+        uint8_t dev_addr = (uint8_t)(M24C04_BASE_ADDR | ((current_addr >> 8U) & 0x01U));
+        uint8_t word_addr = (uint8_t)(current_addr & 0xFFU);
+
+        status_t status = LPI2C_DRV_MasterSendDataBlocking(
+            s_m24c04_i2c_instance, &word_addr, 1U, false, M24C04_WRITE_TIMEOUT_MS);
+        if (status != STATUS_SUCCESS) {
+            return (uint8_t)M24C04_STATUS_ERROR;
+        }
+
+        status = LPI2C_DRV_MasterReceiveDataBlocking(
+            s_m24c04_i2c_instance, &data[bytes_read], (uint32_t)chunk, true, M24C04_WRITE_TIMEOUT_MS);
+        if (status != STATUS_SUCCESS) {
+            return (uint8_t)M24C04_STATUS_ERROR;
+        }
+        bytes_read += chunk;
+    }
+    return (uint8_t)M24C04_STATUS_OK;
+#endif
+}
+
+uint8_t M24C04_EraseRange(uint16_t start_addr, uint16_t length, uint8_t fill_byte)
+{
+    if ((start_addr + length) > M24C04_TOTAL_SIZE) {
+        return (uint8_t)M24C04_STATUS_PARAM_ERROR;
+    }
+
+    uint8_t pattern[M24C04_PAGE_SIZE];
+    memset(pattern, fill_byte, sizeof(pattern));
+
+    uint16_t erased = 0U;
+    while (erased < length) {
+        uint16_t chunk = length - erased;
+        if (chunk > M24C04_PAGE_SIZE) {
+            chunk = M24C04_PAGE_SIZE;
+        }
+        uint8_t status = M24C04_WriteMulti(start_addr + erased, pattern, chunk);
+        if (status != (uint8_t)M24C04_STATUS_OK) {
+            return status;
+        }
+        erased += chunk;
+    }
+
+    return (uint8_t)M24C04_STATUS_OK;
+}
+
+uint8_t M24C04_EraseAll(uint8_t fill_byte)
+{
+    return M24C04_EraseRange(0U, M24C04_TOTAL_SIZE, fill_byte);
+}
+
+uint8_t M24C04_WriteWithCRC(uint16_t mem_addr, const uint8_t *data, uint16_t length)
+{
+    if ((data == NULL) || (length == 0U) || ((mem_addr + length + 1U) > M24C04_TOTAL_SIZE)) {
+        return (uint8_t)M24C04_STATUS_PARAM_ERROR;
+    }
+
+    /* 1. Write the payload */
+    uint8_t status = M24C04_WriteMulti(mem_addr, data, length);
+    if (status != (uint8_t)M24C04_STATUS_OK) {
+        return status;
+    }
+
+    /* 2. Compute and write the CRC-8 as the trailing byte */
+    uint8_t crc = M24C04_ComputeCRC8(data, length);
+    return M24C04_WriteByte(mem_addr + length, crc);
+}
+
+uint8_t M24C04_ReadWithCRC(uint16_t mem_addr, uint8_t *data, uint16_t length)
+{
+    if ((data == NULL) || (length == 0U) || ((mem_addr + length + 1U) > M24C04_TOTAL_SIZE)) {
+        return (uint8_t)M24C04_STATUS_PARAM_ERROR;
+    }
+
+    /* 1. Read payload */
+    uint8_t status = M24C04_ReadMulti(mem_addr, data, length);
+    if (status != (uint8_t)M24C04_STATUS_OK) {
+        return status;
+    }
+
+    /* 2. Read stored CRC */
+    uint8_t stored_crc = 0x00U;
+    status = M24C04_ReadByte(mem_addr + length, &stored_crc);
+    if (status != (uint8_t)M24C04_STATUS_OK) {
+        return status;
+    }
+
+    /* 3. Validate computed CRC against stored CRC */
+    uint8_t computed_crc = M24C04_ComputeCRC8(data, length);
+    if (computed_crc != stored_crc) {
+        return (uint8_t)M24C04_STATUS_CRC_ERROR;
+    }
+
+    return (uint8_t)M24C04_STATUS_OK;
+}
+
+bool M24C04_IsDeviceReady(void)
+{
+#if M24C04_IS_SIMULATION
+    return true;
+#else
+    uint8_t dummy = 0x00U;
+    status_t status = LPI2C_DRV_MasterSendDataBlocking(
+        s_m24c04_i2c_instance, &dummy, 1U, true, 5U);
+    return (status == STATUS_SUCCESS);
+#endif
+}
+

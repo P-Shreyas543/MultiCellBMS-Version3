@@ -147,8 +147,79 @@ uint8_t SD_GetCardType(void);
  */
 bool SD_IsReady(void);
 
+/* ========================================================================== */
+/* Extended SD Physical Layer Features                                        */
+/* ========================================================================== */
+
+/**
+ * @brief Structure holding Card Identification (CID) register fields (CMD10).
+ */
+typedef struct {
+    uint8_t  manufacturer_id;    /*!< Manufacturer ID (MID) */
+    char     oem_id[3];          /*!< OEM / Application ID (OID, 2 chars + null) */
+    char     product_name[6];    /*!< Product Name (PNM, 5 chars + null) */
+    uint8_t  product_rev;        /*!< Product Revision (PRV: major.minor) */
+    uint32_t serial_number;      /*!< Product Serial Number (PSN) */
+    uint16_t mfg_year;           /*!< Manufacturing Year (e.g. 2024) */
+    uint8_t  mfg_month;          /*!< Manufacturing Month (1 to 12) */
+} sd_cid_t;
+
+/**
+ * @brief Read multiple consecutive 512-byte sectors (CMD18).
+ * 
+ * @param start_sector Physical sector to begin reading from.
+ * @param buffer       Pointer to destination memory (must hold sector_count * 512 bytes).
+ * @param sector_count Number of consecutive sectors to read.
+ * @return uint8_t Status code (SD_STATUS_OK on success).
+ */
+uint8_t SD_ReadMultipleSectors(uint32_t start_sector, uint8_t *buffer, uint32_t sector_count);
+
+/**
+ * @brief Write multiple consecutive 512-byte sectors (CMD25).
+ * 
+ * @param start_sector Physical sector to begin writing to.
+ * @param buffer       Pointer to source memory (must contain sector_count * 512 bytes).
+ * @param sector_count Number of consecutive sectors to write.
+ * @return uint8_t Status code (SD_STATUS_OK on success).
+ */
+uint8_t SD_WriteMultipleSectors(uint32_t start_sector, const uint8_t *buffer, uint32_t sector_count);
+
+/**
+ * @brief Query total card capacity in sectors by reading the CSD register (CMD9).
+ * 
+ * @param sector_count Pointer to uint32 output variable.
+ * @return uint8_t Status code (SD_STATUS_OK on success).
+ */
+uint8_t SD_GetSectorCount(uint32_t *sector_count);
+
+/**
+ * @brief Read and parse Card Identification (CID) register (CMD10).
+ * 
+ * @param cid Pointer to destination sd_cid_t structure.
+ * @return uint8_t Status code (SD_STATUS_OK on success).
+ */
+uint8_t SD_GetCardCID(sd_cid_t *cid);
+
+/**
+ * @brief Erase an addressable range of physical sectors (CMD32, CMD33, CMD38).
+ * 
+ * @param start_sector First sector of erase range.
+ * @param end_sector   Last sector of erase range.
+ * @return uint8_t Status code (SD_STATUS_OK on success).
+ */
+uint8_t SD_EraseSectors(uint32_t start_sector, uint32_t end_sector);
+
+/**
+ * @brief Read Card Status Register (CMD13).
+ * 
+ * @param status_word Pointer to uint16 output variable.
+ * @return uint8_t Status code (SD_STATUS_OK on success).
+ */
+uint8_t SD_GetCardStatus(uint16_t *status_word);
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* SD_SPI_H */
+

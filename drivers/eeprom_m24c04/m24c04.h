@@ -111,8 +111,101 @@ uint8_t M24C04_Read(uint16_t mem_addr, uint8_t *data, uint16_t length);
  */
 uint8_t M24C04_ComputeCRC8(const uint8_t *data, uint16_t length);
 
+/* ========================================================================== */
+/* Extended Automotive & EEPROM Feature APIs                                  */
+/* ========================================================================== */
+
+/**
+ * @brief Write a single byte to the specified EEPROM address.
+ * 
+ * @param mem_addr Target memory address (0 to 511).
+ * @param byte_val Byte value to store.
+ * @return uint8_t Status code (M24C04_STATUS_OK on success).
+ */
+uint8_t M24C04_WriteByte(uint16_t mem_addr, uint8_t byte_val);
+
+/**
+ * @brief Read a single byte from the specified EEPROM address.
+ * 
+ * @param mem_addr Target memory address (0 to 511).
+ * @param byte_val Pointer to destination uint8 variable.
+ * @return uint8_t Status code (M24C04_STATUS_OK on success).
+ */
+uint8_t M24C04_ReadByte(uint16_t mem_addr, uint8_t *byte_val);
+
+/**
+ * @brief Write an arbitrary number of bytes (up to 512 bytes) with automatic 16-byte pagination.
+ * 
+ * @param mem_addr Start address (0 to 511).
+ * @param data     Pointer to source buffer.
+ * @param length   Number of bytes to write (1 to 512 - mem_addr).
+ * @return uint8_t Status code (M24C04_STATUS_OK on success).
+ */
+uint8_t M24C04_WriteMulti(uint16_t mem_addr, const uint8_t *data, uint16_t length);
+
+/**
+ * @brief Read an arbitrary number of bytes (up to 512 bytes) from the EEPROM.
+ * 
+ * @param mem_addr Start address (0 to 511).
+ * @param data     Pointer to destination buffer.
+ * @param length   Number of bytes to read (1 to 512 - mem_addr).
+ * @return uint8_t Status code (M24C04_STATUS_OK on success).
+ */
+uint8_t M24C04_ReadMulti(uint16_t mem_addr, uint8_t *data, uint16_t length);
+
+/**
+ * @brief Erase a specific address range with a fill pattern (typically 0xFF or 0x00).
+ * 
+ * @param start_addr Start memory address (0 to 511).
+ * @param length     Number of bytes to erase.
+ * @param fill_byte  Pattern byte to write (e.g. 0xFF for virgin EEPROM state).
+ * @return uint8_t Status code (M24C04_STATUS_OK on success).
+ */
+uint8_t M24C04_EraseRange(uint16_t start_addr, uint16_t length, uint8_t fill_byte);
+
+/**
+ * @brief Bulk erase the entire 512 bytes of EEPROM memory.
+ * 
+ * @param fill_byte Pattern byte (0xFF for standard blank state, or 0x00).
+ * @return uint8_t Status code (M24C04_STATUS_OK on success).
+ */
+uint8_t M24C04_EraseAll(uint8_t fill_byte);
+
+/**
+ * @brief Write data protected by an appended SAE J1850 CRC-8 checksum (ASIL safety feature).
+ * 
+ * Writes 'length' bytes of payload + 1 byte of CRC at (mem_addr + length).
+ * 
+ * @param mem_addr Start memory address.
+ * @param data     Pointer to source data buffer.
+ * @param length   Payload length in bytes.
+ * @return uint8_t Status code.
+ */
+uint8_t M24C04_WriteWithCRC(uint16_t mem_addr, const uint8_t *data, uint16_t length);
+
+/**
+ * @brief Read data and verify the trailing SAE J1850 CRC-8 checksum.
+ * 
+ * Reads 'length' bytes of payload + 1 trailing CRC byte, computes checksum,
+ * and returns M24C04_STATUS_CRC_ERROR if data was corrupted in EEPROM.
+ * 
+ * @param mem_addr Start memory address.
+ * @param data     Pointer to destination buffer.
+ * @param length   Payload length in bytes.
+ * @return uint8_t Status code (M24C04_STATUS_OK if CRC matches, M24C04_STATUS_CRC_ERROR if mismatch).
+ */
+uint8_t M24C04_ReadWithCRC(uint16_t mem_addr, uint8_t *data, uint16_t length);
+
+/**
+ * @brief Check if the physical EEPROM device is responding on the I2C bus (Presence Check).
+ * 
+ * @return true if device acknowledges on I2C address 0x50, false otherwise.
+ */
+bool M24C04_IsDeviceReady(void);
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* M24C04_H */
+

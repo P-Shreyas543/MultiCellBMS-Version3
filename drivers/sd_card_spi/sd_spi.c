@@ -370,3 +370,227 @@ uint8_t SD_WritePayload(uint32_t sector_num, uint16_t offset, const uint8_t *dat
     memcpy(&temp_sector[offset], data, length);
     return SD_WriteSector(sector_num, temp_sector);
 }
+
+/* ========================================================================== */
+/* Extended SD Physical Layer Implementations                                 */
+/* ========================================================================== */
+
+uint8_t SD_ReadMultipleSectors(uint32_t start_sector, uint8_t *buffer, uint32_t sector_count)
+{
+    if ((buffer == NULL) || (sector_count == 0U)) {
+        return (uint8_t)SD_STATUS_PARAM_ERROR;
+    }
+
+    for (uint32_t i = 0U; i < sector_count; i++) {
+        uint8_t status = SD_ReadSector(start_sector + i, &buffer[i * SD_BLOCK_SIZE]);
+        if (status != (uint8_t)SD_STATUS_OK) {
+            return status;
+        }
+    }
+    return (uint8_t)SD_STATUS_OK;
+}
+
+uint8_t SD_WriteMultipleSectors(uint32_t start_sector, const uint8_t *buffer, uint32_t sector_count)
+{
+    if ((buffer == NULL) || (sector_count == 0U)) {
+        return (uint8_t)SD_STATUS_PARAM_ERROR;
+    }
+
+    for (uint32_t i = 0U; i < sector_count; i++) {
+        uint8_t status = SD_WriteSector(start_sector + i, &buffer[i * SD_BLOCK_SIZE]);
+        if (status != (uint8_t)SD_STATUS_OK) {
+            return status;
+        }
+    }
+    return (uint8_t)SD_STATUS_OK;
+}
+
+uint8_t SD_GetSectorCount(uint32_t *sector_count)
+{
+    if (sector_count == NULL) {
+        return (uint8_t)SD_STATUS_PARAM_ERROR;
+    }
+
+#if SD_IS_SIMULATION
+    SD_SimInitIfNeeded();
+    /* In simulation, report 31,250,000 sectors (~16 GB SDHC card) */
+    *sector_count = 31250000U;
+    return (uint8_t)SD_STATUS_OK;
+#else
+    if (!s_sd_is_ready) {
+        return (uint8_t)SD_STATUS_NOT_READY;
+    }
+
+    /* Send CMD9 (SEND_CSD) */
+    uint8_t csd[16];
+    uint8_t r1 = SD_SendCommand(9U, 0U, 0xFFU);
+    if (r1 != 0x00U) {
+        return (uint8_t)SD_STATUS_ERROR;
+    }
+
+    /* Wait for start token */
+    uint16_t timeout = 1000U;
+    while ((SD_SPI_TransferByte(0xFFU) != 0xFEU) && (--timeout > 0U)) {}
+    if (timeout == 0U) {
+        return (uint8_t)SD_STATUS_TIMEOUT;
+    }
+
+    for (uint8_t i = 0U; i < 16U; i++) {
+        csd[i] = SD_SPI_TransferByte(0xFFU);
+    }
+    /* Discard 2 CRC bytes */
+    (void)SD_SPI_TransferByte(0xFFU);
+    (void)SD_SPI_TransferByte(0xFFU);
+
+    /* Check CSD structure version: bits 127..126 of CSD (byte 0, bits 7..6) */
+    if ((csd[0] & 0xC0U) == 0x40U) {
+        /* CSD Version 2.0 (SDHC / SDXC) */
+        uint32_t c_size = ((uint32_t)(csd[7] & 0x3FU) << 16U) |
+                          ((uint32_t)csd[8] << 8U) |
+                          ((uint32_t)csd[9]);
+        *sector_count = (c_size + 1U) * 1024U;
+    } else {
+        /* CSD Version 1.0 (Standard SDSC) */
+        uint32_t c_size = ((uint32_t)(csd[6] & 0x03U) << 10U) |
+                          ((uint32_t)csd[7] << 2U) |
+                          ((uint32_t)(csd[8] & 0xC0U) >> 6U);
+        uint8_t c_size_mult = (uint8_t)(((csd[9] & 0x03U) << 1U) | ((csd[10] & 0x80U) >> 7U));
+        uint8_t read_bl_len = csd[5] & 0x0FU;
+        uint32_t block_nr = (c_size + 1U) * (1UL << (c_size_mult + 2U));
+        uint32_t block_len = 1UL << read_bl_len;
+        *sector_count = (block_nr * block_len) / SD_BLOCK_SIZE;
+    }
+
+    return (uint8_t)SD_STATUS_OK;
+#endif
+}
+
+uint8_t SD_GetCardCID(sd_cid_t *cid)
+{
+    if (cid == NULL) {
+        return (uint8_t)SD_STATUS_PARAM_ERROR;
+    }
+
+#if SD_IS_SIMULATION
+    SD_SimInitIfNeeded();
+    cid->manufacturer_id = 0x03U;       /* SanDisk / Standard Manufacturer */
+    strncpy(cid->oem_id, "SD", 2);
+    cid->oem_id[2] = '\0';
+    strncpy(cid->product_name, "SL16G", 5);
+    cid->product_name[5] = '\0';
+    cid->product_rev = 0x10U;           /* Rev 1.0 */
+    cid->serial_number = 0x12345678U;
+    cid->mfg_year = 2024U;
+    cid->mfg_month = 6U;
+    return (uint8_t)SD_STATUS_OK;
+#else
+    if (!s_sd_is_ready) {
+        return (uint8_t)SD_STATUS_NOT_READY;
+    }
+
+    /* Send CMD10 (SEND_CID) */
+    uint8_t raw_cid[16];
+    uint8_t r1 = SD_SendCommand(10U, 0U, 0xFFU);
+    if (r1 != 0x00U) {
+        return (uint8_t)SD_STATUS_ERROR;
+    }
+
+    uint16_t timeout = 1000U;
+    while ((SD_SPI_TransferByte(0xFFU) != 0xFEU) && (--timeout > 0U)) {}
+    if (timeout == 0U) {
+        return (uint8_t)SD_STATUS_TIMEOUT;
+    }
+
+    for (uint8_t i = 0U; i < 16U; i++) {
+        raw_cid[i] = SD_SPI_TransferByte(0xFFU);
+    }
+    (void)SD_SPI_TransferByte(0xFFU);
+    (void)SD_SPI_TransferByte(0xFFU);
+
+    cid->manufacturer_id = raw_cid[0];
+    cid->oem_id[0] = (char)raw_cid[1];
+    cid->oem_id[1] = (char)raw_cid[2];
+    cid->oem_id[2] = '\0';
+    memcpy(cid->product_name, &raw_cid[3], 5U);
+    cid->product_name[5] = '\0';
+    cid->product_rev = raw_cid[8];
+    cid->serial_number = ((uint32_t)raw_cid[9] << 24U) |
+                         ((uint32_t)raw_cid[10] << 16U) |
+                         ((uint32_t)raw_cid[11] << 8U) |
+                         (uint32_t)raw_cid[12];
+    cid->mfg_year = 2000U + ((uint16_t)(raw_cid[13] & 0x0FU) << 4U) | ((raw_cid[14] & 0xF0U) >> 4U);
+    cid->mfg_month = raw_cid[14] & 0x0FU;
+
+    return (uint8_t)SD_STATUS_OK;
+#endif
+}
+
+uint8_t SD_EraseSectors(uint32_t start_sector, uint32_t end_sector)
+{
+    if (start_sector > end_sector) {
+        return (uint8_t)SD_STATUS_PARAM_ERROR;
+    }
+
+#if SD_IS_SIMULATION
+    SD_SimInitIfNeeded();
+    uint32_t s_max = (end_sector < SD_SIM_NUM_SECTORS) ? end_sector : (SD_SIM_NUM_SECTORS - 1U);
+    for (uint32_t s = start_sector; s <= s_max; s++) {
+        memset(s_sd_sim_sectors[s], 0x00, SD_BLOCK_SIZE);
+    }
+    return (uint8_t)SD_STATUS_OK;
+#else
+    if (!s_sd_is_ready) {
+        return (uint8_t)SD_STATUS_NOT_READY;
+    }
+
+    uint32_t addr_start = (s_sd_card_type & SD_CARD_TYPE_SD2_HC) ? start_sector : (start_sector * SD_BLOCK_SIZE);
+    uint32_t addr_end   = (s_sd_card_type & SD_CARD_TYPE_SD2_HC) ? end_sector   : (end_sector * SD_BLOCK_SIZE);
+
+    /* CMD32: Set erase start sector */
+    if (SD_SendCommand(32U, addr_start, 0xFFU) != 0x00U) {
+        return (uint8_t)SD_STATUS_ERROR;
+    }
+
+    /* CMD33: Set erase end sector */
+    if (SD_SendCommand(33U, addr_end, 0xFFU) != 0x00U) {
+        return (uint8_t)SD_STATUS_ERROR;
+    }
+
+    /* CMD38: Execute flash erase */
+    if (SD_SendCommand(38U, 0U, 0xFFU) != 0x00U) {
+        return (uint8_t)SD_STATUS_ERROR;
+    }
+
+    /* Wait for erase busy release */
+    if (!SD_WaitCardReady(2000U)) {
+        return (uint8_t)SD_STATUS_TIMEOUT;
+    }
+
+    return (uint8_t)SD_STATUS_OK;
+#endif
+}
+
+uint8_t SD_GetCardStatus(uint16_t *status_word)
+{
+    if (status_word == NULL) {
+        return (uint8_t)SD_STATUS_PARAM_ERROR;
+    }
+
+#if SD_IS_SIMULATION
+    SD_SimInitIfNeeded();
+    *status_word = 0x0000U;
+    return (uint8_t)SD_STATUS_OK;
+#else
+    if (!s_sd_is_ready) {
+        return (uint8_t)SD_STATUS_NOT_READY;
+    }
+
+    /* Send CMD13 (SEND_STATUS) -> returns 2-byte R2 response */
+    uint8_t r1 = SD_SendCommand(13U, 0U, 0xFFU);
+    uint8_t r2 = SD_SPI_TransferByte(0xFFU);
+    *status_word = ((uint16_t)r1 << 8U) | (uint16_t)r2;
+
+    return (uint8_t)SD_STATUS_OK;
+#endif
+}
+
