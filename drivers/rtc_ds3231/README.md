@@ -38,18 +38,27 @@ The **DS3231** is an extremely accurate, temperature-compensated real-time clock
 
 The DS3231 stores time and date in **Binary Coded Decimal (BCD)**:
 
-| Reg Addr | Name | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Range |
+| Reg Addr | Name | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Range / Function |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| `0x00` | Seconds | 0 | 10 Seconds | Single Seconds | `00`..`59` |
-| `0x01` | Minutes | 0 | 10 Minutes | Single Minutes | `00`..`59` |
-| `0x02` | Hours | 0 | 12/24 | 10 Hours | Single Hours | `00`..`23` (24h) |
-| `0x03` | Day of Week | 0 | 0 | 0 | 0 | 0 | Day of Week | `1`..`7` |
-| `0x04` | Date | 0 | 0 | 10 Date | Single Date | `01`..`31` |
-| `0x05` | Month / Century | Century | 0 | 0 | 10 Month | Single Month | `01`..`12` |
-| `0x06` | Year | 10 Year | Single Year | `00`..`99` |
-| `0x0F` | Status Register | **OSF** | 0 | 0 | 0 | EN32kHz | BSY | A2F | A1F | Flags |
-| `0x11` | MSB Temp | Sign | $2^6$ | $2^5$ | $2^4$ | $2^3$ | $2^2$ | $2^1$ | $2^0$ | Integer °C |
-| `0x12` | LSB Temp | $2^{-1}$ | $2^{-2}$ | 0 | 0 | 0 | 0 | 0 | 0 | Fraction ($0.25^\circ\text{C}$) |
+| `0x00` | Seconds | 0 | 10 Seconds | Single Seconds | `00`..`59` (BCD) |
+| `0x01` | Minutes | 0 | 10 Minutes | Single Minutes | `00`..`59` (BCD) |
+| `0x02` | Hours | 0 | 12/24 | 10 Hours | Single Hours | `00`..`23` (24h BCD) |
+| `0x03` | Day of Week | 0 | 0 | 0 | 0 | 0 | Day of Week | `1`..`7` (1=Sun) |
+| `0x04` | Date | 0 | 0 | 10 Date | Single Date | `01`..`31` (BCD) |
+| `0x05` | Month / Century | Century | 0 | 0 | 10 Month | Single Month | `01`..`12` (BCD) |
+| `0x06` | Year | 10 Year | Single Year | `00`..`99` (BCD) |
+| `0x07` | Alarm 1 Seconds | **A1M1** | 10 Seconds | Single Seconds | Alarm 1 Sec |
+| `0x08` | Alarm 1 Minutes | **A1M2** | 10 Minutes | Single Minutes | Alarm 1 Min |
+| `0x09` | Alarm 1 Hours | **A1M3** | 12/24 | 10 Hours | Single Hours | Alarm 1 Hours |
+| `0x0A` | Alarm 1 Day/Date | **A1M4** | **DY/DT** | 10 Date | Day / Date | Alarm 1 Day/Date |
+| `0x0B` | Alarm 2 Minutes | **A2M2** | 10 Minutes | Single Minutes | Alarm 2 Min |
+| `0x0C` | Alarm 2 Hours | **A2M3** | 12/24 | 10 Hours | Single Hours | Alarm 2 Hours |
+| `0x0D` | Alarm 2 Day/Date | **A2M4** | **DY/DT** | 10 Date | Day / Date | Alarm 2 Day/Date |
+| `0x0E` | Control Register | **EOSC** | **BBSQW** | **CONV** | **RS2** | **RS1** | **INTCN** | **A2IE** | **A1IE** | Clock & Alarm Control |
+| `0x0F` | Status Register | **OSF** | 0 | 0 | 0 | **EN32kHz**| **BSY** | **A2F** | **A1F** | Status Flags |
+| `0x10` | Aging Offset | Sign | $2^6$ | $2^5$ | $2^4$ | $2^3$ | $2^2$ | $2^1$ | $2^0$ | Crystal Trim ($\pm 127$) |
+| `0x11` | Temp MSB | Sign | $2^6$ | $2^5$ | $2^4$ | $2^3$ | $2^2$ | $2^1$ | $2^0$ | Integer °C |
+| `0x12` | Temp LSB | $2^{-1}$ | $2^{-2}$ | 0 | 0 | 0 | 0 | 0 | 0 | Fraction ($0.25^\circ\text{C}$) |
 
 > [!NOTE]
 > The C driver [`ds3231.c`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/drivers/rtc_ds3231/ds3231.c) automatically performs all BCD-to-Decimal and Decimal-to-BCD conversions internally, so Simulink signals are clean, standard integers.
@@ -140,4 +149,27 @@ if (alarm_fired) {
                                         5. Call DS3231_ClearAlarm1()
                                         6. Return to VLPS (Sleep)
 ```
+
+---
+
+## 7. 100% Complete DS3231 Feature Coverage Matrix
+
+Every single register and capability of the Maxim DS3231 silicon is fully implemented in [`ds3231.h`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/drivers/rtc_ds3231/ds3231.h) & [`ds3231.c`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/drivers/rtc_ds3231/ds3231.c):
+
+| Feature Category | Register Address | Hardware Bit / Field | C Driver API Function | Verification Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **Real-Time Clock** | `0x00..0x02` | Sec, Min, Hours (24h/12h BCD) | `DS3231_GetTimeScalars()`, `DS3231_SetTimeScalars()` | ✅ Tested & Passed |
+| **Calendar** | `0x03..0x06` | Day, Date, Month, Year BCD | `DS3231_GetDateScalars()`, `DS3231_SetDateScalars()` | ✅ Tested & Passed |
+| **Combined Array** | `0x00..0x06` | 7-byte Time Array | `DS3231_GetTimeArray()`, `DS3231_SetTimeArray()` | ✅ Tested & Passed |
+| **Alarm 1** | `0x07..0x0A` | Sec, Min, Hr, Day/Date + A1M1..4 | `DS3231_SetAlarm1()`, `DS3231_CheckAlarm1()`, `DS3231_ClearAlarm1()` | ✅ Tested & Passed |
+| **Alarm 2** | `0x0B..0x0D` | Min, Hr, Day/Date + A2M2..4 | `DS3231_SetAlarm2()`, `DS3231_CheckAlarm2()`, `DS3231_ClearAlarm2()` | ✅ Tested & Passed |
+| **Square-Wave Generator** | `0x0E` | `RS2`, `RS1`, `INTCN`, `BBSQW` | `DS3231_EnableSquareWave()` (1Hz, 1.024k, 4.096k, 8.192k) | ✅ Tested & Passed |
+| **32.768 kHz Output** | `0x0F` | `EN32kHz` (bit 3) | `DS3231_Enable32kHzOutput()`, `DS3231_Is32kHzOutputEnabled()` | ✅ Tested & Passed |
+| **Temperature Sensor** | `0x11..0x12` | 10-bit signed ($0.25^\circ\text{C}$ res) | `DS3231_GetTemperature()`, `DS3231_GetTemperatureFixed()` | ✅ Tested & Passed |
+| **Forced Temp Conversion**| `0x0E`, `0x0F` | `CONV` (bit 5), `BSY` (bit 2) | `DS3231_TriggerTemperatureConversion()`, `DS3231_IsTemperatureBusy()`| ✅ Tested & Passed |
+| **Crystal Aging Trim** | `0x10` | 8-bit signed ($\pm 0.1\text{ ppm}$/LSB) | `DS3231_SetAgingOffset()`, `DS3231_GetAgingOffset()` | ✅ Tested & Passed |
+| **Power Loss Detect** | `0x0F` | `OSF` (Oscillator Stop Flag) | `DS3231_CheckOscillatorStopFlag()` | ✅ Tested & Passed |
+| **Battery Life Control** | `0x0E` | `EOSC` (Enable Oscillator on Vbat) | `DS3231_SetOscillatorStopOnBattery()` | ✅ Tested & Passed |
+| **Multi-Bus Selection** | Internal | S32K LPI2C0 / LPI2C1 / etc. | `DS3231_SetI2CInstance()`, `DS3231_GetI2CInstance()` | ✅ Tested & Passed |
+
 

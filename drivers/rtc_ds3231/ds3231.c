@@ -554,4 +554,318 @@ uint8_t DS3231_ClearAlarm1(void)
 #endif
 }
 
+/* ========================================================================== */
+/* Alarm 2 Configuration & Control (1-Minute Resolution)                      */
+/* ========================================================================== */
+
+uint8_t DS3231_SetAlarm2(uint8_t hours, uint8_t minutes, uint8_t mode)
+{
+    if ((hours > 23U) || (minutes > 59U)) {
+        return (uint8_t)DS3231_STATUS_PARAM_ERROR;
+    }
+
+    uint8_t raw[3];
+    /* A2M2 in bit 7 of minutes */
+    raw[0] = (uint8_t)(ds3231_dec_to_bcd(minutes) | ((mode & 0x01U) ? 0x80U : 0x00U));
+    /* A2M3 in bit 7 of hours */
+    raw[1] = (uint8_t)(ds3231_dec_to_bcd(hours)   | ((mode & 0x02U) ? 0x80U : 0x00U));
+    /* A2M4 in bit 7 of day/date */
+    raw[2] = (uint8_t)(0x01U                       | ((mode & 0x04U) ? 0x80U : 0x00U));
+
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    memcpy(&s_ds3231_sim_regs[DS3231_REG_ALARM2_MIN], raw, 3U);
+    /* Enable INTCN (bit 2) and A2IE (bit 1) in Control Reg 0x0E */
+    s_ds3231_sim_regs[DS3231_REG_CONTROL] |= 0x06U;
+    /* Clear A2F in Status Reg 0x0F */
+    s_ds3231_sim_regs[DS3231_REG_STATUS] &= (uint8_t)~0x02U;
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    status_t status = DS3231_I2C_Write(DS3231_REG_ALARM2_MIN, raw, 3U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+
+    /* Configure Control Register (0x0E): INTCN=1, A2IE=1 */
+    uint8_t ctrl = 0x00U;
+    status = DS3231_I2C_Read(DS3231_REG_CONTROL, &ctrl, 1U);
+    if (status == STATUS_SUCCESS) {
+        ctrl |= 0x06U; /* Set INTCN (bit 2) and A2IE (bit 1) */
+        (void)DS3231_I2C_Write(DS3231_REG_CONTROL, &ctrl, 1U);
+    }
+
+    /* Clear A2F in Status Register (0x0F) */
+    uint8_t stat = 0x00U;
+    status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status == STATUS_SUCCESS) {
+        stat &= (uint8_t)~0x02U; /* Clear bit 1 (A2F) */
+        (void)DS3231_I2C_Write(DS3231_REG_STATUS, &stat, 1U);
+    }
+
+    return (uint8_t)DS3231_STATUS_OK;
+#endif
+}
+
+uint8_t DS3231_CheckAlarm2(bool *alarm_fired, bool clear_if_fired)
+{
+    if (alarm_fired == NULL) {
+        return (uint8_t)DS3231_STATUS_PARAM_ERROR;
+    }
+
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    uint8_t stat = s_ds3231_sim_regs[DS3231_REG_STATUS];
+    *alarm_fired = ((stat & 0x02U) != 0U);
+    if (*alarm_fired && clear_if_fired) {
+        s_ds3231_sim_regs[DS3231_REG_STATUS] &= (uint8_t)~0x02U;
+    }
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t stat = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status != STATUS_SUCCESS) {
+        *alarm_fired = false;
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+
+    *alarm_fired = ((stat & 0x02U) != 0U);
+    if (*alarm_fired && clear_if_fired) {
+        stat &= (uint8_t)~0x02U;
+        (void)DS3231_I2C_Write(DS3231_REG_STATUS, &stat, 1U);
+    }
+
+    return (uint8_t)DS3231_STATUS_OK;
+#endif
+}
+
+uint8_t DS3231_ClearAlarm2(void)
+{
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    s_ds3231_sim_regs[DS3231_REG_STATUS] &= (uint8_t)~0x02U;
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t stat = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+    stat &= (uint8_t)~0x02U;
+    status = DS3231_I2C_Write(DS3231_REG_STATUS, &stat, 1U);
+    return (status == STATUS_SUCCESS) ? (uint8_t)DS3231_STATUS_OK : (uint8_t)DS3231_STATUS_ERROR;
+#endif
+}
+
+/* ========================================================================== */
+/* Square-Wave & 32kHz Clock Output Features                                  */
+/* ========================================================================== */
+
+uint8_t DS3231_EnableSquareWave(ds3231_sqw_freq_t freq, bool battery_backed)
+{
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    uint8_t ctrl = s_ds3231_sim_regs[DS3231_REG_CONTROL];
+    ctrl &= (uint8_t)~(DS3231_CTRL_INTCN | DS3231_CTRL_RS2 | DS3231_CTRL_RS1 | DS3231_CTRL_BBSQW);
+    ctrl |= (uint8_t)(freq & (DS3231_CTRL_RS2 | DS3231_CTRL_RS1));
+    if (battery_backed) {
+        ctrl |= DS3231_CTRL_BBSQW;
+    }
+    s_ds3231_sim_regs[DS3231_REG_CONTROL] = ctrl;
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t ctrl = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_CONTROL, &ctrl, 1U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+
+    /* Clear INTCN (enable SQW), RS2, RS1, and BBSQW */
+    ctrl &= (uint8_t)~(DS3231_CTRL_INTCN | DS3231_CTRL_RS2 | DS3231_CTRL_RS1 | DS3231_CTRL_BBSQW);
+    ctrl |= (uint8_t)(freq & (DS3231_CTRL_RS2 | DS3231_CTRL_RS1));
+    if (battery_backed) {
+        ctrl |= DS3231_CTRL_BBSQW;
+    }
+
+    status = DS3231_I2C_Write(DS3231_REG_CONTROL, &ctrl, 1U);
+    return (status == STATUS_SUCCESS) ? (uint8_t)DS3231_STATUS_OK : (uint8_t)DS3231_STATUS_ERROR;
+#endif
+}
+
+uint8_t DS3231_DisableSquareWave(void)
+{
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    s_ds3231_sim_regs[DS3231_REG_CONTROL] |= DS3231_CTRL_INTCN;
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t ctrl = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_CONTROL, &ctrl, 1U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+    ctrl |= DS3231_CTRL_INTCN; /* Set INTCN to restore alarm interrupt mode */
+    status = DS3231_I2C_Write(DS3231_REG_CONTROL, &ctrl, 1U);
+    return (status == STATUS_SUCCESS) ? (uint8_t)DS3231_STATUS_OK : (uint8_t)DS3231_STATUS_ERROR;
+#endif
+}
+
+uint8_t DS3231_Enable32kHzOutput(bool enable)
+{
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    if (enable) {
+        s_ds3231_sim_regs[DS3231_REG_STATUS] |= DS3231_STAT_EN32KHZ;
+    } else {
+        s_ds3231_sim_regs[DS3231_REG_STATUS] &= (uint8_t)~DS3231_STAT_EN32KHZ;
+    }
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t stat = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+
+    if (enable) {
+        stat |= DS3231_STAT_EN32KHZ;
+    } else {
+        stat &= (uint8_t)~DS3231_STAT_EN32KHZ;
+    }
+
+    status = DS3231_I2C_Write(DS3231_REG_STATUS, &stat, 1U);
+    return (status == STATUS_SUCCESS) ? (uint8_t)DS3231_STATUS_OK : (uint8_t)DS3231_STATUS_ERROR;
+#endif
+}
+
+uint8_t DS3231_Is32kHzOutputEnabled(bool *enabled)
+{
+    if (enabled == NULL) {
+        return (uint8_t)DS3231_STATUS_PARAM_ERROR;
+    }
+
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    *enabled = ((s_ds3231_sim_regs[DS3231_REG_STATUS] & DS3231_STAT_EN32KHZ) != 0U);
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t stat = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status != STATUS_SUCCESS) {
+        *enabled = false;
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+    *enabled = ((stat & DS3231_STAT_EN32KHZ) != 0U);
+    return (uint8_t)DS3231_STATUS_OK;
+#endif
+}
+
+/* ========================================================================== */
+/* Advanced Thermal & Calibration Features                                    */
+/* ========================================================================== */
+
+uint8_t DS3231_TriggerTemperatureConversion(void)
+{
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    s_ds3231_sim_regs[DS3231_REG_CONTROL] |= DS3231_CTRL_CONV;
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t ctrl = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_CONTROL, &ctrl, 1U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+
+    ctrl |= DS3231_CTRL_CONV;
+    status = DS3231_I2C_Write(DS3231_REG_CONTROL, &ctrl, 1U);
+    return (status == STATUS_SUCCESS) ? (uint8_t)DS3231_STATUS_OK : (uint8_t)DS3231_STATUS_ERROR;
+#endif
+}
+
+uint8_t DS3231_IsTemperatureBusy(bool *busy)
+{
+    if (busy == NULL) {
+        return (uint8_t)DS3231_STATUS_PARAM_ERROR;
+    }
+
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    *busy = ((s_ds3231_sim_regs[DS3231_REG_STATUS] & DS3231_STAT_BSY) != 0U);
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t stat = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status != STATUS_SUCCESS) {
+        *busy = false;
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+    *busy = ((stat & DS3231_STAT_BSY) != 0U);
+    return (uint8_t)DS3231_STATUS_OK;
+#endif
+}
+
+uint8_t DS3231_SetAgingOffset(int8_t offset)
+{
+    uint8_t raw = (uint8_t)offset;
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    s_ds3231_sim_regs[DS3231_REG_AGING] = raw;
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    status_t status = DS3231_I2C_Write(DS3231_REG_AGING, &raw, 1U);
+    return (status == STATUS_SUCCESS) ? (uint8_t)DS3231_STATUS_OK : (uint8_t)DS3231_STATUS_ERROR;
+#endif
+}
+
+uint8_t DS3231_GetAgingOffset(int8_t *offset)
+{
+    if (offset == NULL) {
+        return (uint8_t)DS3231_STATUS_PARAM_ERROR;
+    }
+
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    *offset = (int8_t)s_ds3231_sim_regs[DS3231_REG_AGING];
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t raw = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_AGING, &raw, 1U);
+    if (status != STATUS_SUCCESS) {
+        *offset = 0;
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+    *offset = (int8_t)raw;
+    return (uint8_t)DS3231_STATUS_OK;
+#endif
+}
+
+uint8_t DS3231_SetOscillatorStopOnBattery(bool stop_on_battery)
+{
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    if (stop_on_battery) {
+        s_ds3231_sim_regs[DS3231_REG_CONTROL] |= DS3231_CTRL_EOSC;
+    } else {
+        s_ds3231_sim_regs[DS3231_REG_CONTROL] &= (uint8_t)~DS3231_CTRL_EOSC;
+    }
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t ctrl = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_CONTROL, &ctrl, 1U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+
+    if (stop_on_battery) {
+        ctrl |= DS3231_CTRL_EOSC;
+    } else {
+        ctrl &= (uint8_t)~DS3231_CTRL_EOSC;
+    }
+
+    status = DS3231_I2C_Write(DS3231_REG_CONTROL, &ctrl, 1U);
+    return (status == STATUS_SUCCESS) ? (uint8_t)DS3231_STATUS_OK : (uint8_t)DS3231_STATUS_ERROR;
+#endif
+}
+
+
 
