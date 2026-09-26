@@ -1,0 +1,7 @@
+EXPORTS
+    M24C04_ComputeCRC8_1WlViFQ8nyYsAZ83miuj1G @1
+    M24C04_Init_1WlViFQ8nyYsAZ83miuj1G @2
+    M24C04_Read_1WlViFQ8nyYsAZ83miuj1G @3
+    M24C04_Write_1WlViFQ8nyYsAZ83miuj1G @4
+    get_checksum_source_info @5
+    get_dll_checksum_1WlViFQ8nyYsAZ83miuj1G @6
