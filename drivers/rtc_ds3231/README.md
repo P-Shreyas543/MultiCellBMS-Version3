@@ -77,3 +77,67 @@ To timestamp your SD Card blackbox trip logs:
 1. Connect `RTC_GetTime` and `RTC_GetDate` to a simple Unix timestamp converter function (or pack `Year`, `Month`, `Day`, `Hour`, `Min`, `Sec` into 6 bytes).
 2. Wire the timestamp into the 32-byte payload input of the `SD_WritePayload` block (Bytes 0..3).
 3. Every log entry written to the SD card will carry an exact, battery-backed timestamp that persists even across vehicle shutdowns.
+
+---
+
+## 6. How to Set an Alarm in DS3231
+
+The DS3231 contains **two independent, programmable alarms**:
+* **Alarm 1**: Full 1-second resolution (matches Seconds, Minutes, Hours, and Day/Date).
+* **Alarm 2**: 1-minute resolution (matches Minutes, Hours, and Day/Date).
+
+### Step 1: Alarm 1 Register Map & Mask Bits
+
+Alarm 1 uses registers `0x07` through `0x0A`. Bit 7 of each register is a **mask bit** (`A1M1`..`A1M4`):
+
+| A1M4 (Reg 0x0A, bit 7) | A1M3 (Reg 0x09, bit 7) | A1M2 (Reg 0x08, bit 7) | A1M1 (Reg 0x07, bit 7) | Trigger Condition / Rate |
+| :---: | :---: | :---: | :---: | :--- |
+| `1` | `1` | `1` | `1` | **Alarm once per second** (`DS3231_ALARM1_EVERY_SEC`) |
+| `1` | `1` | `1` | `0` | **Alarm when seconds match** (once per minute, e.g. at second 00) |
+| `1` | `1` | `0` | `0` | **Alarm when minutes and seconds match** (once per hour, e.g. at 15:00) |
+| `1` | `0` | `0` | `0` | **Daily Alarm** (when hours, minutes, and seconds match, e.g. 08:30:00) |
+| `0` | `0` | `0` | `0` | **Monthly Alarm** (when date, hours, minutes, and seconds match) |
+
+### Step 2: Enabling the Physical Interrupt (`INT/SQW` Pin)
+
+To make the physical `INT/SQW` pin on the DS3231 pull LOW when an alarm fires:
+1. **Control Register (`0x0E`)**:
+   - Set bit 2 (`INTCN = 1`): Routes the alarm interrupt to the physical `INT/SQW` pin (instead of outputting a square wave).
+   - Set bit 0 (`A1IE = 1`): Enables the Alarm 1 interrupt.
+2. **Status Register (`0x0F`)**:
+   - Bit 0 is `A1F` (Alarm 1 Flag). The hardware sets this to `1` when the match occurs.
+   - ⚠️ **CRITICAL RULE**: The MCU must clear `A1F` by writing `0` to it, or else the `INT/SQW` pin will stay pulled LOW and never trigger another interrupt!
+
+### Step 3: Using the C Driver API
+
+The driver [`ds3231.h`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/drivers/rtc_ds3231/ds3231.h) provides a one-call setup function that handles the registers, mask bits, and interrupt enables automatically:
+
+```c
+/* Example 1: Set a daily alarm at 08:30:00 */
+uint8_t status = DS3231_SetAlarm1(8U, 30U, 0U, DS3231_ALARM1_MATCH_HR_MIN_SEC);
+
+/* Example 2: Set an hourly wakeup alarm (fires at minute 00, second 00) */
+uint8_t status = DS3231_SetAlarm1(0U, 0U, 0U, DS3231_ALARM1_MATCH_MIN_SEC);
+
+/* Check if alarm fired and clear the flag */
+bool alarm_fired = false;
+DS3231_CheckAlarm1(&alarm_fired, true); /* true = automatically clear flag in hardware */
+if (alarm_fired) {
+    /* Perform BMS periodic health check / wakeup routine */
+}
+```
+
+### Step 4: Automotive Low-Power Wakeup (S32K144 Integration)
+
+```
+[ DS3231 RTC ]                         [ NXP S32K144 MCU ]
+  INT/SQW Pin (Active LOW) ---------->   PTA4 / PTD0 (External Interrupt / WUU)
+                                                |
+                                        1. MCU is in VLPS (Sleep)
+                                        2. Alarm fires -> INT pulls LOW
+                                        3. PORT interrupt ISR wakes MCU
+                                        4. Read cell voltages & temperatures
+                                        5. Call DS3231_ClearAlarm1()
+                                        6. Return to VLPS (Sleep)
+```
+

@@ -228,8 +228,56 @@ uint8_t DS3231_GetDateScalars(uint8_t *year, uint8_t *month, uint8_t *date, uint
  */
 uint8_t DS3231_SetDateScalars(uint8_t year, uint8_t month, uint8_t date, uint8_t day_of_week);
 
+/* ========================================================================== */
+/* Alarm Configuration & Control                                              */
+/* ========================================================================== */
+
+/**
+ * @brief Alarm 1 trigger rate modes (mask bits A1M4..A1M1).
+ */
+typedef enum {
+    DS3231_ALARM1_EVERY_SEC          = 0x0FU, /*!< 1111: Trigger once per second */
+    DS3231_ALARM1_MATCH_SEC          = 0x0EU, /*!< 1110: Trigger when seconds match (once per minute) */
+    DS3231_ALARM1_MATCH_MIN_SEC      = 0x0CU, /*!< 1100: Trigger when minutes & seconds match (once per hour) */
+    DS3231_ALARM1_MATCH_HR_MIN_SEC   = 0x08U, /*!< 1000: Trigger when hours, minutes & seconds match (daily) */
+    DS3231_ALARM1_MATCH_DATE         = 0x00U  /*!< 0000: Trigger when date, hours, minutes & seconds match */
+} ds3231_alarm1_mode_t;
+
+/**
+ * @brief Configure Alarm 1 and enable interrupt output on the INT/SQW pin.
+ * 
+ * Sets the match registers (0x07..0x0A), enables INTCN & A1IE in Control register (0x0E),
+ * and clears the A1F flag in Status register (0x0F).
+ * 
+ * @param hours   Match hours (0-23)
+ * @param minutes Match minutes (0-59)
+ * @param seconds Match seconds (0-59)
+ * @param mode    Trigger condition (ds3231_alarm1_mode_t)
+ * @return uint8_t Status code (DS3231_STATUS_OK on success).
+ */
+uint8_t DS3231_SetAlarm1(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t mode);
+
+/**
+ * @brief Check if Alarm 1 has triggered.
+ * 
+ * Reads bit 0 (A1F) of Status register (0x0F). If clear_if_fired is true,
+ * automatically writes 0 to clear A1F so subsequent alarms can trigger.
+ * 
+ * @param alarm_fired    Pointer to boolean output (true if alarm matched).
+ * @param clear_if_fired If true, clears the A1F flag in hardware.
+ * @return uint8_t Status code (DS3231_STATUS_OK on success).
+ */
+uint8_t DS3231_CheckAlarm1(bool *alarm_fired, bool clear_if_fired);
+
+/**
+ * @brief Explicitly clear the Alarm 1 flag (A1F) in the status register.
+ * @return uint8_t Status code (DS3231_STATUS_OK on success).
+ */
+uint8_t DS3231_ClearAlarm1(void);
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* DS3231_H */
+

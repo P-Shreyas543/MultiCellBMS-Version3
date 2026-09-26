@@ -449,3 +449,109 @@ uint8_t DS3231_SetDateScalars(uint8_t year, uint8_t month, uint8_t date, uint8_t
 #endif
 }
 
+/* ========================================================================== */
+/* Alarm 1 Configuration & Control                                            */
+/* ========================================================================== */
+
+uint8_t DS3231_SetAlarm1(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t mode)
+{
+    if ((hours > 23U) || (minutes > 59U) || (seconds > 59U)) {
+        return (uint8_t)DS3231_STATUS_PARAM_ERROR;
+    }
+
+    uint8_t raw[4];
+    /* A1M1 in bit 7 of seconds */
+    raw[0] = (uint8_t)(ds3231_dec_to_bcd(seconds) | ((mode & 0x01U) ? 0x80U : 0x00U));
+    /* A1M2 in bit 7 of minutes */
+    raw[1] = (uint8_t)(ds3231_dec_to_bcd(minutes) | ((mode & 0x02U) ? 0x80U : 0x00U));
+    /* A1M3 in bit 7 of hours */
+    raw[2] = (uint8_t)(ds3231_dec_to_bcd(hours)   | ((mode & 0x04U) ? 0x80U : 0x00U));
+    /* A1M4 in bit 7 of day/date */
+    raw[3] = (uint8_t)(0x01U                       | ((mode & 0x08U) ? 0x80U : 0x00U));
+
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    memcpy(&s_ds3231_sim_regs[DS3231_REG_ALARM1_SEC], raw, 4U);
+    /* Enable INTCN (bit 2) and A1IE (bit 0) in Control Reg 0x0E */
+    s_ds3231_sim_regs[DS3231_REG_CONTROL] |= 0x05U;
+    /* Clear A1F in Status Reg 0x0F */
+    s_ds3231_sim_regs[DS3231_REG_STATUS] &= (uint8_t)~0x01U;
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    /* 1. Write Alarm 1 match registers 0x07..0x0A */
+    status_t status = DS3231_I2C_Write(DS3231_REG_ALARM1_SEC, raw, 4U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+
+    /* 2. Configure Control Register (0x0E): INTCN=1, A1IE=1 */
+    uint8_t ctrl = 0x00U;
+    status = DS3231_I2C_Read(DS3231_REG_CONTROL, &ctrl, 1U);
+    if (status == STATUS_SUCCESS) {
+        ctrl |= 0x05U; /* Set INTCN (bit 2) and A1IE (bit 0) */
+        (void)DS3231_I2C_Write(DS3231_REG_CONTROL, &ctrl, 1U);
+    }
+
+    /* 3. Clear A1F in Status Register (0x0F) */
+    uint8_t stat = 0x00U;
+    status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status == STATUS_SUCCESS) {
+        stat &= (uint8_t)~0x01U; /* Clear bit 0 (A1F) */
+        (void)DS3231_I2C_Write(DS3231_REG_STATUS, &stat, 1U);
+    }
+
+    return (uint8_t)DS3231_STATUS_OK;
+#endif
+}
+
+uint8_t DS3231_CheckAlarm1(bool *alarm_fired, bool clear_if_fired)
+{
+    if (alarm_fired == NULL) {
+        return (uint8_t)DS3231_STATUS_PARAM_ERROR;
+    }
+
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    uint8_t stat = s_ds3231_sim_regs[DS3231_REG_STATUS];
+    *alarm_fired = ((stat & 0x01U) != 0U);
+    if (*alarm_fired && clear_if_fired) {
+        s_ds3231_sim_regs[DS3231_REG_STATUS] &= (uint8_t)~0x01U;
+    }
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t stat = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status != STATUS_SUCCESS) {
+        *alarm_fired = false;
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+
+    *alarm_fired = ((stat & 0x01U) != 0U);
+    if (*alarm_fired && clear_if_fired) {
+        stat &= (uint8_t)~0x01U;
+        (void)DS3231_I2C_Write(DS3231_REG_STATUS, &stat, 1U);
+    }
+
+    return (uint8_t)DS3231_STATUS_OK;
+#endif
+}
+
+uint8_t DS3231_ClearAlarm1(void)
+{
+#if DS3231_IS_SIMULATION
+    DS3231_SimInitIfNeeded();
+    s_ds3231_sim_regs[DS3231_REG_STATUS] &= (uint8_t)~0x01U;
+    return (uint8_t)DS3231_STATUS_OK;
+#else
+    uint8_t stat = 0x00U;
+    status_t status = DS3231_I2C_Read(DS3231_REG_STATUS, &stat, 1U);
+    if (status != STATUS_SUCCESS) {
+        return (uint8_t)DS3231_STATUS_ERROR;
+    }
+    stat &= (uint8_t)~0x01U;
+    status = DS3231_I2C_Write(DS3231_REG_STATUS, &stat, 1U);
+    return (status == STATUS_SUCCESS) ? (uint8_t)DS3231_STATUS_OK : (uint8_t)DS3231_STATUS_ERROR;
+#endif
+}
+
+
