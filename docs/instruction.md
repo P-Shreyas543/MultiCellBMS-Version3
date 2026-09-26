@@ -282,6 +282,14 @@ s_h.Scope = 'Output'; s_h.Type = 'uint8'; s_h.Size = '1';
 
 ## 5. Blueprints for Common Automotive & BMS ICs
 
+Each peripheral driver includes a dedicated, production-grade `README.md` in its source folder:
+* **All Drivers Matrix**: [`drivers/README.md`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/drivers/README.md)
+* **ST M24C04 EEPROM**: [`drivers/eeprom_m24c04/README.md`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/drivers/eeprom_m24c04/README.md)
+* **Maxim DS3231 RTC**: [`drivers/rtc_ds3231/README.md`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/drivers/rtc_ds3231/README.md)
+* **SPI MicroSD Blackbox**: [`drivers/sd_card_spi/README.md`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/drivers/sd_card_spi/README.md)
+
+---
+
 ### Blueprint A: I2C-Based Real-Time Clock (RTC) - Maxim DS3231
 *(Extremely Accurate I2C-Integrated RTC/TCXO/Crystal, Slave Address `0x68`)*
 
@@ -396,6 +404,11 @@ s_h.Scope = 'Output'; s_h.Type = 'uint8'; s_h.Size = '1';
 * **Dual-Mode Operation**:
   - **Desktop / Host Simulation**: Uses an in-RAM virtual disk (8 sectors $\times$ 512 bytes) pre-initialized with formatted BMS telemetry magic header (`"BMS-LOG-v3.0"`), letting you verify your algorithm, block parsing, and state flow directly in Simulink without hardware.
   - **Hardware Target**: Transparently switches to S32K SDK `LPSPI_DRV_MasterTransferBlocking()` and GPIO chip select controls when compiled with S32 Design Studio / Embedded Coder.
+
+* **PC System Extraction & Log Decoding (How to Read on PC)**:
+  - Because data is stored in deterministic raw 512-byte physical sectors (no FAT32 corruption risk), Windows will not assign an ordinary drive letter.
+  - **MATLAB Method**: Run [`read_sd_card('demo')`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/scripts/read_sd_card.m) or `read_sd_card('\\.\PhysicalDrive1')` to decode all 32-byte BMS packets, plot telemetry trends, and auto-export to [`BMS_Trip_Log_Export.csv`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/BMS_Trip_Log_Export.csv).
+  - **Python Method**: Run [`python scripts/sd_card_dump.py --demo`](file:///c:/Users/Shreyas/Documents/MultiCell%20BMS%20Algorithum%20Develpment%20LAB/MultiCellBMS-Version3/scripts/sd_card_dump.py) or `python scripts/sd_card_dump.py --drive \\.\PhysicalDrive1 --csv trip.csv`.
 
 ---
 
