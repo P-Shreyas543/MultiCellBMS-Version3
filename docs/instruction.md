@@ -36,16 +36,19 @@ MultiCellBMS-Version3/
 │
 ├── drivers/                    <- Modular, dual-mode C drivers (.h and .c)
 │   ├── eeprom_m24c04/          <- ST M24C04 EEPROM driver (m24c04.h, m24c04.c)
-│   └── rtc_ds3231/             <- Maxim DS3231 RTC driver (ds3231.h, ds3231.c)
+│   ├── rtc_ds3231/             <- Maxim DS3231 RTC driver (ds3231.h, ds3231.c)
+│   └── sd_card_spi/            <- SPI SD Card Reader driver (sd_spi.h, sd_spi.c)
 │
 ├── models/                     <- Simulink .slx models
 │   ├── EEPROM_SmartWheels.slx  <- S32K144 hardware deployment model
 │   ├── EEPROM_M24C04_Demo.slx  <- ST M24C04 simulation verification model
-│   └── RTC_DS3231_Demo.slx     <- Maxim DS3231 simulation verification model
+│   ├── RTC_DS3231_Demo.slx     <- Maxim DS3231 simulation verification model
+│   └── SD_Card_SPI_Demo.slx    <- SPI SD Card simulation verification model
 │
 ├── scripts/                    <- Automation scripts
 │   ├── create_eeprom_blocks.m  <- Automates M24C04 block setup
 │   ├── create_ds3231_blocks.m  <- Automates DS3231 block setup
+│   ├── create_sd_blocks.m      <- Automates SD Card block setup
 │   └── fix_eeprom_smartwheels.m<- Diagnostic repair script
 │
 └── docs/                       <- Technical documentation
@@ -89,6 +92,22 @@ startup;
    - **Date Displays**: `Date`, `Month`, `Year_20xx`, and `DayOfWeek` display calendar date.
    - **Temperature**: `Die_Temperature_C` reads the internal TCXO temperature (`25.25` °C).
    - `RTC_SetI2CInstance` allows switching the I2C instance (`0` or `1`).
+
+---
+
+### C. SPI SD Card Reader Demo (BMS Trip & Blackbox Logging)
+1. Open the model:
+   ```matlab
+   open_system('SD_Card_SPI_Demo');
+   ```
+2. Press **Run** (`Ctrl+T`).
+3. **Verified Outputs**:
+   - `Card_Type`: displays `8` (`SD_CARD_TYPE_SD2_HC` / High-Capacity SDHC card).
+   - `Init_Status`: displays `0` (Success).
+   - `Read_Status`: reads Sector 0 successfully (512-byte physical sector).
+   - `Write_Status`: writes 512-byte test pattern to Sector 1.
+   - `Payload_32B_Display`: reads 32-byte telemetry header from Sector 0 (`"MULTICELL_BMS_V3:TRIP_RECORDER_..."`).
+   - `SD_SetInstance`: allows switching the LPSPI instance (`0` for `LPSPI0`, `1` for `LPSPI1`, `2` for `LPSPI2`).
 
 ---
 
@@ -328,15 +347,55 @@ s_h.Scope = 'Output'; s_h.Type = 'uint8'; s_h.Size = '1';
 ---
 
 ### Blueprint D: SPI-Based SD Card / Memory Storage
-*(e.g., SPI-Mode MMC/SD Card for BMS Blackbox Trip Logging)*
+*(e.g., SPI-Mode MicroSD/SDHC Card for BMS Blackbox Trip Logging & Crash Event Telemetry)*
 
-* **Bus**: SPI (`LPSPI`), 8-bit transfers, low speed (400 kHz) for init, high speed (up to 20 MHz) for data.
-* **Sector Size**: Fixed 512 bytes per block (`CMD17` Read Single Block, `CMD24` Write Single Block).
-* **Driver Architecture**:
-  - `SD_Init()`, `SD_WriteSector(sector_num, data_512)`, `SD_ReadSector(sector_num, data_512)`.
-* **Simulink Block Interface**:
-  - `SD_WriteBlock`: Inputs: `sector_id` (uint32), `data_512` (uint8[512]) $\rightarrow$ Output: `status` (uint8).
-  - `SD_ReadBlock`: Inputs: `sector_id` (uint32) $\rightarrow$ Outputs: `data_512` (uint8[512]), `status` (uint8).
+* **Bus**: SPI (`LPSPI0`, `LPSPI1`, or `LPSPI2`), 8-bit transfers, SPI Mode 0 (`CPOL=0, CPHA=0`), 3.3V Logic.
+  - Low speed during Card Identification ($\le 400\text{ kHz}$)
+  - High speed during Data Transfer (up to $20\text{ MHz}$)
+* **Sector Architecture**:
+  - Standard physical sector size: **512 bytes per block**.
+  - Standard SDSC cards use byte addresses (`sector * 512`), while SDHC/SDXC cards use direct sector index addresses (`sector`). The driver auto-detects this.
+* **SPI Protocol & Command Framing**:
+  - SD commands are 6 bytes: `[01b | 6-bit CMD] [32-bit Argument] [7-bit CRC | 1b]`.
+  - `CMD0` (`0x40`, Arg `0x00000000`, CRC `0x95`): Software reset $\rightarrow$ Returns R1 `0x01` (In Idle State).
+  - `CMD8` (`0x48`, Arg `0x000001AA`, CRC `0x87`): Send Interface Condition $\rightarrow$ Checks voltage range and echo pattern `0xAA`.
+  - `CMD58` (`0x7A`, Arg `0x00000000`, CRC `0x01`): Read OCR register $\rightarrow$ Checks CCS (Card Capacity Status).
+  - `CMD55` (`0x77`) + `ACMD41` (`0x69`, Arg `0x40000000`): Initialize card with High Capacity Support (HCS).
+  - `CMD16` (`0x50`, Arg `0x00000200`): Force block size to 512 bytes (for standard SDSC).
+  - `CMD17` (`0x51`, Arg `Sector`): Read Single Block $\rightarrow$ Wait for start token `0xFE`, read 512 bytes + 2-byte CRC.
+  - `CMD24` (`0x58`, Arg `Sector`): Write Single Block $\rightarrow$ Send start token `0xFE` + 512 bytes + dummy CRC, poll busy bit.
+
+* **S32K144 LPSPI Pinout Reference**:
+
+| Signal | LPSPI0 (Recommended) | LPSPI1 | LPSPI2 | SD Card Pin / Function |
+| :--- | :--- | :--- | :--- | :--- |
+| **SCK** | `PTB2` (ALT3) or `PTE0` (ALT2) | `PTB14` (ALT3) | `PTC15` (ALT3) | CLK (Clock) |
+| **MOSI** | `PTB4` (ALT3) or `PTE1` (ALT2) | `PTB16` (ALT3) | `PTC17` (ALT3) | DI (Data In) |
+| **MISO** | `PTB3` (ALT3) or `PTE2` (ALT2) | `PTB15` (ALT3) | `PTC16` (ALT3) | DO (Data Out) |
+| **CS (SS)** | `PTB5` (ALT3 / GPIO) | `PTB17` (ALT3 / GPIO) | `PTC14` (ALT3 / GPIO) | CS (Chip Select, Active LOW) |
+| **VCC** | 3.3V Rail | 3.3V Rail | 3.3V Rail | Power (3.3V only, DO NOT use 5V) |
+| **GND** | Board GND | Board GND | Board GND | Common Ground |
+
+* **Driver Architecture (`drivers/sd_card_spi/sd_spi.h` & `sd_spi.c`)**:
+  ```c
+  void    SD_SPI_SetInstance(uint32_t instance);
+  uint8_t SD_SPI_Init(uint8_t *card_type);
+  uint8_t SD_SPI_ReadSector(uint32_t sector_num, uint8_t *data_512);
+  uint8_t SD_SPI_WriteSector(uint32_t sector_num, const uint8_t *data_512);
+  uint8_t SD_SPI_ReadPayload(uint32_t sector_num, uint16_t offset, uint8_t *payload, uint16_t len);
+  uint8_t SD_SPI_WritePayload(uint32_t sector_num, uint16_t offset, const uint8_t *payload, uint16_t len);
+  ```
+
+* **Simulink Block Interface (`models/SD_Card_SPI_Demo.slx`)**:
+  - `SD_Init`: Outputs: `card_type` (uint8: `0x01`=MMC, `0x02`=SDv1, `0x04`=SDv2-SC, `0x0C`=SDv2-HC), `status` (uint8: `0`=OK).
+  - `SD_ReadSector`: Input: `sector_id` (uint32) $\rightarrow$ Outputs: `data_512` (uint8[512]), `status` (uint8).
+  - `SD_WriteSector`: Inputs: `sector_id` (uint32), `data_512` (uint8[512]) $\rightarrow$ Output: `status` (uint8).
+  - `SD_ReadPayload`: Inputs: `sector_id` (uint32), `offset` (uint16), `length` (uint16) $\rightarrow$ Outputs: `payload_32` (uint8[32]), `status` (uint8).
+  - `SD_SetInstance`: Input: `instance` (uint32: `0`=LPSPI0, `1`=LPSPI1, `2`=LPSPI2).
+
+* **Dual-Mode Operation**:
+  - **Desktop / Host Simulation**: Uses an in-RAM virtual disk (8 sectors $\times$ 512 bytes) pre-initialized with formatted BMS telemetry magic header (`"BMS-LOG-v3.0"`), letting you verify your algorithm, block parsing, and state flow directly in Simulink without hardware.
+  - **Hardware Target**: Transparently switches to S32K SDK `LPSPI_DRV_MasterTransferBlocking()` and GPIO chip select controls when compiled with S32 Design Studio / Embedded Coder.
 
 ---
 

@@ -16,6 +16,7 @@ function startup()
     folders = {
         fullfile(project_root, 'drivers', 'eeprom_m24c04');
         fullfile(project_root, 'drivers', 'rtc_ds3231');
+        fullfile(project_root, 'drivers', 'sd_card_spi');
         fullfile(project_root, 'models');
         fullfile(project_root, 'scripts');
         fullfile(project_root, 'docs');
