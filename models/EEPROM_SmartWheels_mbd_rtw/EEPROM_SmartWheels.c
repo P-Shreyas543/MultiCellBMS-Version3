@@ -3,10 +3,10 @@
  *
  * Code generated for Simulink model 'EEPROM_SmartWheels'.
  *
- * Model version                   : 1.86
+ * Model version                   : 1.85
  * Simulink Coder version          : 24.2 (R2024b) 21-Jun-2024
  * MBDT for S32K1xx Series Version : 4.3.0 (R2016a-R2022a) 13-Sep-2022
- * C/C++ source code generated on  : Sat Sep 26 15:25:02 2026
+ * C/C++ source code generated on  : Sat Sep 26 15:42:53 2026
  *
  * Target selection: mbd_s32k.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -49,7 +49,7 @@ void LPUART1_RxTx_callback(void *driverState, uart_event_t event, void *userData
      *  Constant: '<S1>/Constant'
      */
     /* ST M24C04 EEPROM Write Operation */
-    EEPROM_SmartWheels_B.EEPROM_Write = M24C04_Write((0),
+    EEPROM_SmartWheels_B.EEPROM_Write = M24C04_Write((1),
       EEPROM_SmartWheels_B.LPUART_Receive, EEPROM_SmartWheels_ConstB.Width_j);
   }
 
@@ -64,7 +64,7 @@ void EEPROM_SmartWheels_step(void)
    *  Constant: '<Root>/Constant1'
    */
   /* ST M24C04 EEPROM Read Operation */
-  EEPROM_SmartWheels_B.EEPROM_Read_o1 = M24C04_Read((0),
+  EEPROM_SmartWheels_B.EEPROM_Read_o1 = M24C04_Read((1),
     EEPROM_SmartWheels_B.EEPROM_Read_o2, (2));
 
   /* If: '<Root>/If' */

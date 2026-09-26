@@ -17,3 +17,8 @@ slprj/
 # Editor / OS
 .DS_Store
 Thumbs.db
+
+# Scratch and intermediate RTW files
+scratch/
+*.rtw
+rtwgen_tlc/

@@ -28,107 +28,107 @@
     </Cores>
   </PROCESSOR>
   <PATHS>
-    <LinkerCommandFile>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\S32K14x.ld</LinkerCommandFile>
-    <ProjectInfoPath>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\ProjectInfo.xml</ProjectInfoPath>
+    <LinkerCommandFile>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\S32K14x.ld</LinkerCommandFile>
+    <ProjectInfoPath>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\ProjectInfo.xml</ProjectInfoPath>
     <IncludePaths>
-      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw</Path>
-      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\common</Path>
-      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\inc</Path>
-      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\S32K144\include</Path>
-      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx</Path>
-      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx</Path>
+      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw</Path>
+      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\common</Path>
+      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\inc</Path>
+      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\S32K144\include</Path>
+      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx</Path>
+      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx</Path>
       <Path>C:\Program Files\MATLAB\R2024b\simulink\include</Path>
     </IncludePaths>
     <SourceCodePaths>
-      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw</Path>
+      <Path>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw</Path>
     </SourceCodePaths>
   </PATHS>
   <FILES>
     <GeneratedCs>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels_data.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\clock_S32K1xx.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\edma_driver.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\edma_hw_access.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\edma_irq.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\interrupt_manager.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lin_common.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lin_driver.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lin_irq.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lin_lpuart_driver.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpi2c_driver.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpi2c_hw_access.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpi2c_irq.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpit_driver.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpuart_driver.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpuart_hw_access.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpuart_irq.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\mbd_main.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\osif_baremetal.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\pins_driver.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\pins_port_hw_access.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\power_manager.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\power_manager_S32K1xx.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\power_smc_hw_access.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\s32k_clock_init.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\startup.c</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\system_S32K144.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels_data.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\clock_S32K1xx.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\edma_driver.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\edma_hw_access.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\edma_irq.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\interrupt_manager.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lin_common.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lin_driver.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lin_irq.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lin_lpuart_driver.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpi2c_driver.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpi2c_hw_access.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpi2c_irq.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpit_driver.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpuart_driver.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpuart_hw_access.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpuart_irq.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\mbd_main.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\osif_baremetal.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\pins_driver.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\pins_port_hw_access.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\power_manager.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\power_manager_S32K1xx.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\power_smc_hw_access.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\s32k_clock_init.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\startup.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\system_S32K144.c</PathName>
     </GeneratedCs>
     <GeneratedHs>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels_private.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels_types.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\callbacks.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\devassert.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\device_registers.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\edma_driver.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\edma_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\edma_irq.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lin_driver.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lin_lpuart_driver.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpi2c_driver.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpi2c_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpi2c_irq.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpit_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpuart_driver.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpuart_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\lpuart_irq.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\osif.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\pins_gpio_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\pins_port_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\power_scg_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\rtw_continuous.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\rtw_solver.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\rtwtypes.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\s32k_clock_init.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\startup.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\status.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\system_S32K144.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\common\S32_core_cm4.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\inc\clock.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\inc\clock_manager.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\inc\interrupt_manager.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\inc\lpit_driver.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\inc\pins_driver.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\inc\power_manager.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\S32K144\include\S32K144.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\S32K144\include\S32K144_features.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\clock_S32K1xx.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\pcc_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\pmc_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\scg_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\sim_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\smc_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx\power_manager_S32K1xx.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx\power_rcm_hw_access.h</PathName>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx\power_smc_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels_private.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\EEPROM_SmartWheels_types.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\callbacks.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\devassert.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\device_registers.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\edma_driver.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\edma_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\edma_irq.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lin_driver.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lin_lpuart_driver.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpi2c_driver.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpi2c_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpi2c_irq.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpit_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpuart_driver.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpuart_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\lpuart_irq.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\osif.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\pins_gpio_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\pins_port_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\power_scg_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rtw_continuous.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rtw_solver.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rtwtypes.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\s32k_clock_init.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\startup.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\status.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\system_S32K144.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\common\S32_core_cm4.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\inc\clock.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\inc\clock_manager.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\inc\interrupt_manager.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\inc\lpit_driver.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\inc\pins_driver.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\inc\power_manager.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\S32K144\include\S32K144.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\S32K144\include\S32K144_features.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\clock_S32K1xx.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\pcc_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\pmc_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\scg_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\sim_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx\smc_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx\power_manager_S32K1xx.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx\power_rcm_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx\power_smc_hw_access.h</PathName>
       <PathName>C:\Program Files\MATLAB\R2024b\simulink\include\solver_zc.h</PathName>
     </GeneratedHs>
     <GeneratedASMs>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\startup_S32K144.s</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\startup_S32K144.s</PathName>
     </GeneratedASMs>
     <Libraries>
-      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\S32K14x_AMMCLIB.a</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\S32K14x_AMMCLIB.a</PathName>
       <PathName>C:\Users\Shreyas\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\NXP_MBDToolbox_S32K1xx\tools\gcc-6.3-arm32-eabi\arm-none-eabi\newlib\lib\thumb\v7e-m\fpv4-sp\hard\libm.a</PathName>
     </Libraries>
   </FILES>
@@ -149,7 +149,7 @@
       <Option>-D__FPU_PRESENT=1</Option>
       <Option>-D__FPU_USED=1</Option>
       <Option>-D__NVIC_PRIO_BITS=FEATURE_NVIC_PRIO_BITS</Option>
-      <Option> -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\common" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\inc" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\S32K144\include" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx" -I"C:\Program Files\MATLAB\R2024b\simulink\include" -I"C:\Users\Shreyas\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\NXP_MBDToolbox_S32K1xx\tools\gcc-6.3-arm32-eabi/arm-none-eabi/include"</Option>
+      <Option> -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\common" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\inc" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\S32K144\include" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\clock\S32K1xx" -I"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\src\power\S32K1xx" -I"C:\Program Files\MATLAB\R2024b\simulink\include" -I"C:\Users\Shreyas\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\NXP_MBDToolbox_S32K1xx\tools\gcc-6.3-arm32-eabi/arm-none-eabi/include"</Option>
     </CCoptList>
     <ASMoptList>
       <Option>-mcpu=cortex-m4</Option>
@@ -172,10 +172,10 @@
       <Option>-l:S32K14x_AMMCLIB.a</Option>
       <Option>-l:libm.a</Option>
       <Option>-L"C:\Users\Shreyas\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\NXP_MBDToolbox_S32K1xx\tools\gcc-6.3-arm32-eabi\arm-none-eabi\newlib\lib\thumb\v7e-m\fpv4-sp\hard"</Option>
-      <Option>-L"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw"</Option>
+      <Option>-L"C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw"</Option>
       <Option>-specs=nosys.specs</Option>
       <Option>-Wl,-Map,EEPROM_SmartWheels.map</Option>
-      <Option>-T "C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\EEPROM_SmartWheels_mbd_rtw\S32K14x.ld"</Option>
+      <Option>-T "C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\S32K14x.ld"</Option>
       <Option>--sysroot="C:\Users\Shreyas\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\NXP_MBDToolbox_S32K1xx\tools\gcc-6.3-arm32-eabi\arm-none-eabi\newlib"</Option>
     </LinkerOptList>
    </BuildOptions>

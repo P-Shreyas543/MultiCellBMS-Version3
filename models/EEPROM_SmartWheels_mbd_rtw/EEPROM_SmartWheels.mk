@@ -205,7 +205,6 @@ MATLAB_INCLUDES = \
 # Additional includes
 ADD_INCLUDES = \
 	-$(include_opt)$(START_DIR) \
-	-$(include_opt)C:\Users\Shreyas\DOCUME~1\MULTIC~2\MULTIC~1\drivers\EEPROM~1 \
 	-$(include_opt)$(START_DIR)\EEPROM_SmartWheels_mbd_rtw \
 	-$(include_opt)$(MATLAB_ROOT)\extern\include \
 	-$(include_opt)$(MATLAB_ROOT)\simulink\include \
@@ -578,13 +577,6 @@ endif
     endif
 
 ###################################
-%.o : C:\Users\Shreyas\DOCUME~1\MULTIC~2\MULTIC~1\drivers\EEPROM~1/%.c
-	@echo ### "C:\Users\Shreyas\DOCUME~1\MULTIC~2\MULTIC~1\drivers\EEPROM~1\$*.c"o
-    ifeq ($(TARGET_COMPILER), GreenHills Multi)
-	$(CC) -c -MD $(CC_OPTS) $(CFLAGS) -o $@ $<
-    else
-	@$(CC) $(CC_OPTS) $(CFLAGS) $<
-    endif
 %.o : $(MATLAB_ROOT)\rtw\c\src/%.c
 	@echo ### "$(MATLAB_ROOT)\rtw\c\src\$*.c"o
     ifeq ($(TARGET_COMPILER), GreenHills Multi)
@@ -605,13 +597,6 @@ endif
 	$(CC) -c -MD $(CC_OPTS) $(CFLAGS) -o $@ $<
     else
 	@$(CC) $(CC_OPTS) $(CFLAGS) $<
-    endif
-m24c04.o : "C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\drivers\eeprom_m24c04\m24c04.c"
-	@echo ### "|>EXPAND_DIR_NAME<|\$*.c"o
-    ifeq ($(TARGET_COMPILER), GreenHills Multi)
-	$(CC) -c -MD $(CC_OPTS) $(CFLAGS) -o $@ "C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\drivers\eeprom_m24c04\m24c04.c"
-    else
-	@$(CC) $(CC_OPTS) $(CFLAGS) "C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\drivers\eeprom_m24c04\m24c04.c"
     endif
 
 
