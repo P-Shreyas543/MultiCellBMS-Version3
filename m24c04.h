@@ -37,6 +37,11 @@ extern "C" {
 #define M24C04_WRITE_TIMEOUT_MS     25U      /* I2C transmission timeout in ms */
 #define M24C04_WRITE_CYCLE_DELAY_MS 6U       /* Delay for internal write cycle (tW max = 5 ms) */
 
+/* Default LPI2C instance (can be overridden at compile-time or runtime) */
+#ifndef M24C04_DEFAULT_I2C_INSTANCE
+#define M24C04_DEFAULT_I2C_INSTANCE 0U
+#endif
+
 /* ========================================================================== */
 /* Industry-Standard Return Codes (AUTOSAR NvM aligned)                       */
 /* ========================================================================== */
@@ -56,6 +61,18 @@ typedef enum {
  * @brief Initialize the M24C04 EEPROM driver.
  */
 void M24C04_Init(void);
+
+/**
+ * @brief Dynamically set the LPI2C hardware instance (0 for LPI2C0, 1 for LPI2C1, etc.).
+ * @param instance Hardware instance index.
+ */
+void M24C04_SetI2CInstance(uint32_t instance);
+
+/**
+ * @brief Get the currently configured LPI2C hardware instance.
+ * @return uint32_t Hardware instance index.
+ */
+uint32_t M24C04_GetI2CInstance(void);
 
 /**
  * @brief Write up to 32 bytes into the M24C04 EEPROM.

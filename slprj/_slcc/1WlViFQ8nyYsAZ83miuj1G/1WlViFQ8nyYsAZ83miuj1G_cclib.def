@@ -1,7 +1,9 @@
 EXPORTS
     M24C04_ComputeCRC8_1WlViFQ8nyYsAZ83miuj1G @1
-    M24C04_Init_1WlViFQ8nyYsAZ83miuj1G @2
-    M24C04_Read_1WlViFQ8nyYsAZ83miuj1G @3
-    M24C04_Write_1WlViFQ8nyYsAZ83miuj1G @4
-    get_checksum_source_info @5
-    get_dll_checksum_1WlViFQ8nyYsAZ83miuj1G @6
+    M24C04_GetI2CInstance_1WlViFQ8nyYsAZ83miuj1G @2
+    M24C04_Init_1WlViFQ8nyYsAZ83miuj1G @3
+    M24C04_Read_1WlViFQ8nyYsAZ83miuj1G @4
+    M24C04_SetI2CInstance_1WlViFQ8nyYsAZ83miuj1G @5
+    M24C04_Write_1WlViFQ8nyYsAZ83miuj1G @6
+    get_checksum_source_info @7
+    get_dll_checksum_1WlViFQ8nyYsAZ83miuj1G @8

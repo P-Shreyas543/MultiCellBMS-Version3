@@ -1,0 +1,17 @@
+EXPORTS
+    DS3231_CheckOscillatorStopFlag_JHwDAMd2yr5Dqbb6OPUnuH @1
+    DS3231_GetDateScalars_JHwDAMd2yr5Dqbb6OPUnuH @2
+    DS3231_GetI2CInstance_JHwDAMd2yr5Dqbb6OPUnuH @3
+    DS3231_GetTemperatureFixed_JHwDAMd2yr5Dqbb6OPUnuH @4
+    DS3231_GetTemperature_JHwDAMd2yr5Dqbb6OPUnuH @5
+    DS3231_GetTimeArray_JHwDAMd2yr5Dqbb6OPUnuH @6
+    DS3231_GetTimeScalars_JHwDAMd2yr5Dqbb6OPUnuH @7
+    DS3231_GetTime_JHwDAMd2yr5Dqbb6OPUnuH @8
+    DS3231_Init_JHwDAMd2yr5Dqbb6OPUnuH @9
+    DS3231_SetDateScalars_JHwDAMd2yr5Dqbb6OPUnuH @10
+    DS3231_SetI2CInstance_JHwDAMd2yr5Dqbb6OPUnuH @11
+    DS3231_SetTimeArray_JHwDAMd2yr5Dqbb6OPUnuH @12
+    DS3231_SetTimeScalars_JHwDAMd2yr5Dqbb6OPUnuH @13
+    DS3231_SetTime_JHwDAMd2yr5Dqbb6OPUnuH @14
+    get_checksum_source_info @15
+    get_dll_checksum_JHwDAMd2yr5Dqbb6OPUnuH @16

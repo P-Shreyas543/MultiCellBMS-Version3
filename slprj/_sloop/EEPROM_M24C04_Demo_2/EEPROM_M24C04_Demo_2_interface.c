@@ -65,6 +65,16 @@ void M24C04_Init_EEPROM_M24C04_Demo_2(void)
     M24C04_Init();
 }
 
+void M24C04_SetI2CInstance_EEPROM_M24C04_Demo_2(uint32_T instance)
+{
+    M24C04_SetI2CInstance(instance);
+}
+
+uint32_T M24C04_GetI2CInstance_EEPROM_M24C04_Demo_2(void)
+{
+    return M24C04_GetI2CInstance();
+}
+
 uint8_T M24C04_Write_EEPROM_M24C04_Demo_2(uint16_T mem_addr, const uint8_T *data, uint16_T length)
 {
     return M24C04_Write(mem_addr, data, length);
@@ -287,6 +297,30 @@ XIL_INTERFACE_ERROR_CODE xilOutput(uint32_T xilFcnId, uint32_T xilTID)
 
     case 8:
     {
+        uint32_T dataWidth_instance = 0;
+        xilReadData((MemUnit_T *) &dataWidth_instance, sizeData);
+        uint8_T scopeID_instance = 0;
+        xilReadData((MemUnit_T *) &scopeID_instance, sizeScopeID);
+        uint32_T instance = 0;
+        xilReadData((MemUnit_T *) &instance, (uint32_T) sizeof(uint32_T));
+
+
+
+        M24C04_SetI2CInstance_EEPROM_M24C04_Demo_2(instance);
+
+
+
+        MemUnit_T responseId = XIL_RESPONSE_OUTPUT_DATA;
+        if (xilWriteData(&responseId, (uint32_T) sizeof(MemUnit_T)) != XIL_DATA_STREAM_SUCCESS) {
+            return XIL_INTERFACE_COMMS_FAILURE;
+        }
+
+
+        break;
+    }
+
+    case 9:
+    {
         uint32_T dataWidth_out = 0;
         xilReadData((MemUnit_T *) &dataWidth_out, sizeData);
         uint8_T scopeID_out = 0;
@@ -342,7 +376,7 @@ XIL_INTERFACE_ERROR_CODE xilOutput(uint32_T xilFcnId, uint32_T xilTID)
         break;
     }
 
-    case 9:
+    case 10:
     {
 
 
@@ -359,7 +393,34 @@ XIL_INTERFACE_ERROR_CODE xilOutput(uint32_T xilFcnId, uint32_T xilTID)
         break;
     }
 
-    case 10:
+    case 11:
+    {
+        uint32_T dataWidth_out = 0;
+        xilReadData((MemUnit_T *) &dataWidth_out, sizeData);
+        uint8_T scopeID_out = 0;
+        xilReadData((MemUnit_T *) &scopeID_out, sizeScopeID);
+        uint32_T out = 0;
+
+
+
+        out = M24C04_GetI2CInstance_EEPROM_M24C04_Demo_2();
+
+
+
+        MemUnit_T responseId = XIL_RESPONSE_OUTPUT_DATA;
+        if (xilWriteData(&responseId, (uint32_T) sizeof(MemUnit_T)) != XIL_DATA_STREAM_SUCCESS) {
+            return XIL_INTERFACE_COMMS_FAILURE;
+        }
+
+        if (xilWriteData((MemUnit_T *) &out, (uint32_T) sizeof(uint32_T)) != XIL_DATA_STREAM_SUCCESS) {
+            return XIL_INTERFACE_COMMS_FAILURE;
+        }
+
+
+        break;
+    }
+
+    case 12:
     {
         uint32_T dataWidth_out = 0;
         xilReadData((MemUnit_T *) &dataWidth_out, sizeData);

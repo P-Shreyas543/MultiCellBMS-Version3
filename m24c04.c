@@ -33,12 +33,25 @@ static void M24C04_SimInitIfNeeded(void)
 }
 #endif
 
+/* Configurable LPI2C instance index (0 = LPI2C0, 1 = LPI2C1) */
+static uint32_t s_m24c04_i2c_instance = M24C04_DEFAULT_I2C_INSTANCE;
+
+void M24C04_SetI2CInstance(uint32_t instance)
+{
+    s_m24c04_i2c_instance = instance;
+}
+
+uint32_t M24C04_GetI2CInstance(void)
+{
+    return s_m24c04_i2c_instance;
+}
+
 void M24C04_Init(void)
 {
 #if M24C04_IS_SIMULATION
     M24C04_SimInitIfNeeded();
 #else
-    /* Target LPI2C0 peripheral is initialized via MBDT LPI2C_Config block */
+    /* Target LPI2C peripheral is initialized via MBDT LPI2C_Config block */
 #endif
 }
 
@@ -89,12 +102,12 @@ uint8_t M24C04_Write(uint16_t mem_addr, const uint8_t *data, uint16_t length)
             tx_buf[1U + i] = data[bytes_written + i];
         }
 
-        /* Set target slave address on LPI2C instance 0 */
-        LPI2C_DRV_MasterSetSlaveAddr(0U, (uint16_t)slave_addr, false);
+        /* Set target slave address on LPI2C instance */
+        LPI2C_DRV_MasterSetSlaveAddr(s_m24c04_i2c_instance, (uint16_t)slave_addr, false);
 
         /* Transmit chunk with STOP condition to trigger internal EEPROM write cycle */
         status_t status = LPI2C_DRV_MasterSendDataBlocking(
-            0U, tx_buf, (uint32_t)(chunk_size + 1U), true, M24C04_WRITE_TIMEOUT_MS);
+            s_m24c04_i2c_instance, tx_buf, (uint32_t)(chunk_size + 1U), true, M24C04_WRITE_TIMEOUT_MS);
         
         if (status != STATUS_SUCCESS) {
             return (uint8_t)M24C04_STATUS_ERROR;
@@ -140,12 +153,12 @@ uint8_t M24C04_Read(uint16_t mem_addr, uint8_t *data, uint16_t length)
     uint8_t slave_addr = (uint8_t)(M24C04_BASE_ADDR | ((mem_addr >> 8U) & 0x01U));
     uint8_t word_addr = (uint8_t)(mem_addr & 0xFFU);
 
-    /* Set target slave address on LPI2C instance 0 */
-    LPI2C_DRV_MasterSetSlaveAddr(0U, (uint16_t)slave_addr, false);
+    /* Set target slave address on LPI2C instance */
+    LPI2C_DRV_MasterSetSlaveAddr(s_m24c04_i2c_instance, (uint16_t)slave_addr, false);
 
     /* 1. Transmit word address without STOP (Repeated START) */
     status_t status = LPI2C_DRV_MasterSendDataBlocking(
-        0U, &word_addr, 1U, false, M24C04_WRITE_TIMEOUT_MS);
+        s_m24c04_i2c_instance, &word_addr, 1U, false, M24C04_WRITE_TIMEOUT_MS);
     
     if (status != STATUS_SUCCESS) {
         return (uint8_t)M24C04_STATUS_ERROR;
@@ -153,7 +166,7 @@ uint8_t M24C04_Read(uint16_t mem_addr, uint8_t *data, uint16_t length)
 
     /* 2. Read sequential data from EEPROM with STOP */
     status = LPI2C_DRV_MasterReceiveDataBlocking(
-        0U, data, (uint32_t)length, true, 50U);
+        s_m24c04_i2c_instance, data, (uint32_t)length, true, 50U);
     
     if (status != STATUS_SUCCESS) {
         return (uint8_t)M24C04_STATUS_ERROR;

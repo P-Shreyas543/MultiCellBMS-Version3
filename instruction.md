@@ -136,6 +136,8 @@ typedef enum {
 } device_status_t;
 
 void    DEVICE_Init(void);
+void    DEVICE_SetI2CInstance(uint32_t instance);
+uint32_t DEVICE_GetI2CInstance(void);
 uint8_t DEVICE_Write(uint16_t reg_addr, const uint8_t *data, uint16_t length);
 uint8_t DEVICE_Read(uint16_t reg_addr, uint8_t *data, uint16_t length);
 uint8_t DEVICE_ComputeCRC8(const uint8_t *data, uint16_t length);
@@ -186,17 +188,26 @@ set_param(blk, 'OutputCode', 'status = DEVICE_Write(addr, data_in, len);');
 
 ## 4. Blueprints for Common Automotive & BMS ICs
 
-### Blueprint A: I2C-Based Real-Time Clock (RTC)
-*(e.g., NXP PCF85063 / Maxim DS1307)*
+### Blueprint A: I2C-Based Real-Time Clock (RTC) - Maxim DS3231
+*(Extremely Accurate I2C-Integrated RTC/TCXO/Crystal, Slave Address `0x68`)*
 
-* **Bus**: I2C (`LPI2C0`, typical 7-bit address `0x51` or `0x68`).
-* **Registers**: Seconds, Minutes, Hours, Day, Month, Year (encoded in **BCD** format).
-* **Driver Architecture**:
-  - `RTC_SetTime(const rtc_time_t *time)`: Encodes human-readable decimals to BCD, transmits via I2C to register `0x02`.
-  - `RTC_GetTime(rtc_time_t *time)`: Reads 7 consecutive registers, decodes BCD to decimal integers.
-* **Simulink Block Interface**:
-  - `RTC_Write`: Inputs: `[year, month, day, hour, min, sec]` (uint8[6] array) $\rightarrow$ Output: `status` (uint8).
-  - `RTC_Read`: Output: `[year, month, day, hour, min, sec]` (uint8[6] array), `status` (uint8).
+* **Bus**: I2C (Standard 100 kHz or Fast Mode 400 kHz, 7-bit Slave Address `0x68`).
+* **Registers**:
+  - `00h..06h`: Seconds, Minutes, Hours (24h), Day of week (1..7), Date (1..31), Month/Century (1..12), Year (0..99) in **BCD**.
+  - `0Eh`: Control Register (`EOSC`, `BBSQW`, `CONV`, `RS2`, `RS1`, `INTCN`, `A2IE`, `A1IE`).
+  - `0Fh`: Status Register (`OSF` Oscillator Stop Flag, `EN32kHz`, `BSY`, `A2F`, `A1F`).
+  - `11h..12h`: 10-bit Temperature Sensor (0.25°C resolution, signed two's complement).
+* **Driver Architecture (`ds3231.h` / `ds3231.c`)**:
+  - `DS3231_SetI2CInstance(uint32_t instance)`: Runtime selection of LPI2C instance (LPI2C0, LPI2C1, etc.).
+  - `DS3231_SetTimeArray(const uint8_t *time_vec)`: Writes 7-element vector `[Year, Month, Date, Day, Hour, Min, Sec]`.
+  - `DS3231_GetTimeArray(uint8_t *time_vec)`: Reads 7-element vector `[Year, Month, Date, Day, Hour, Min, Sec]`.
+  - `DS3231_GetTemperature(float *temp_c)`: Reads temperature in °C.
+  - `DS3231_CheckOscillatorStopFlag(bool *osf, bool clear)`: Checks battery status / time validity.
+* **Simulink Block Interface (`RTC_DS3231_Demo.slx`)**:
+  - `DS3231_GetTime`: Outputs: `time_out` (uint8[7]), `status` (uint8).
+  - `DS3231_SetTime`: Inputs: `time_in` (uint8[7]) $\rightarrow$ Output: `status` (uint8).
+  - `DS3231_GetTemp`: Outputs: `temp_c` (single), `status` (uint8).
+  - `DS3231_SetInstance`: Input: `instance` (uint32).
 
 ---
 

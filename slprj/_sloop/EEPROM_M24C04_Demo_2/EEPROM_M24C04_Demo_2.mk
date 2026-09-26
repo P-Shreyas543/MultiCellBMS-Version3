@@ -2,8 +2,8 @@
 ## Makefile generated for component 'EEPROM_M24C04_Demo'. 
 ## 
 ## Makefile     : EEPROM_M24C04_Demo_2.mk
-## Generated on : Fri Sep 25 18:13:28 2026
-## Final product: ./sbDk73IpjRQqKQFWLk7y7F.exe
+## Generated on : Sat Sep 26 13:51:26 2026
+## Final product: ./fteXWr41OJ5ZRmSjRrVDgE.exe
 ## Product type : executable
 ## 
 ###########################################################################
@@ -163,7 +163,7 @@ SHAREDLIB_LDFLAGS    = -shared -Wl,--no-undefined \
 ## OUTPUT INFO
 ###########################################################################
 
-PRODUCT = ./sbDk73IpjRQqKQFWLk7y7F.exe
+PRODUCT = ./fteXWr41OJ5ZRmSjRrVDgE.exe
 PRODUCT_TYPE = "executable"
 BUILD_TYPE = "Top-Level Standalone Executable"
 
