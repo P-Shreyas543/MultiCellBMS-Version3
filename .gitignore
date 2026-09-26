@@ -1,0 +1,19 @@
+# MATLAB / Simulink
+*.asv
+*.autosave
+*~
+*.slxc
+slprj/
+*.mex*
+*.tmp
+
+# Compilation Artifacts
+*.o
+*.obj
+*.elf
+*.mot
+*.map
+
+# Editor / OS
+.DS_Store
+Thumbs.db
