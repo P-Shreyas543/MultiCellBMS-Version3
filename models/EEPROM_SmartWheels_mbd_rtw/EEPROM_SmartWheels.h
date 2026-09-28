@@ -3,10 +3,10 @@
  *
  * Code generated for Simulink model 'EEPROM_SmartWheels'.
  *
- * Model version                   : 1.85
+ * Model version                   : 1.93
  * Simulink Coder version          : 24.2 (R2024b) 21-Jun-2024
  * MBDT for S32K1xx Series Version : 4.3.0 (R2016a-R2022a) 13-Sep-2022
- * C/C++ source code generated on  : Sat Sep 26 15:42:53 2026
+ * C/C++ source code generated on  : Sat Sep 26 17:03:29 2026
  *
  * Target selection: mbd_s32k.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -19,6 +19,7 @@
 #ifndef EEPROM_SmartWheels_COMMON_INCLUDES_
 #define EEPROM_SmartWheels_COMMON_INCLUDES_
 #include "rtwtypes.h"
+#include "rt_nonfinite.h"
 #include "math.h"
 #include "lpuart_driver.h"
 #include "lin_lpuart_driver.h"
@@ -30,10 +31,11 @@
 #include "lpi2c_driver.h"
 #include "lpi2c_irq.h"
 #include "lpi2c_hw_access.h"
-#include "m24c04.h"
+#include "ds3231.h"
 #endif                                 /* EEPROM_SmartWheels_COMMON_INCLUDES_ */
 
 #include "EEPROM_SmartWheels_types.h"
+#include "rtGetNaN.h"
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetErrorStatus
@@ -48,16 +50,18 @@
 typedef struct {
   uint32_T LPUART_RxTx_ISR_o2;         /* '<Root>/LPUART_RxTx_ISR' */
   uint16_T LPI2C_Config;               /* '<Root>/LPI2C_Config' */
-  uint8_T EEPROM_Read_o1;              /* '<Root>/EEPROM_Read' */
-  uint8_T EEPROM_Read_o2[2];           /* '<Root>/EEPROM_Read' */
-  uint8_T LPUART_Receive[2];           /* '<Root>/LPUART_Receive' */
-  uint8_T EEPROM_Write;                /* '<S1>/EEPROM_Write' */
+  uint8_T LPUART_Receive[3];           /* '<Root>/LPUART_Receive' */
+  uint8_T RTC_GetTime_o1;              /* '<Root>/RTC_GetTime' */
+  uint8_T RTC_GetTime_o2;              /* '<Root>/RTC_GetTime' */
+  uint8_T RTC_GetTime_o3;              /* '<Root>/RTC_GetTime' */
+  uint8_T RTC_GetTime_o4;              /* '<Root>/RTC_GetTime' */
+  uint8_T RTC_SetTime;                 /* '<S1>/RTC_SetTime' */
+  uint8_T TmpSignalConversionAtLPUART_Tra[23];
 } B_EEPROM_SmartWheels_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
   const uint32_T Width;                /* '<S2>/Width' */
-  const uint16_T Width_j;              /* '<S1>/Width' */
 } ConstB_EEPROM_SmartWheels_T;
 
 /* Real-time Model Data Structure */
@@ -94,6 +98,9 @@ extern RT_MODEL_EEPROM_SmartWheels_T *const EEPROM_SmartWheels_M;
  * '<Root>' : 'EEPROM_SmartWheels'
  * '<S1>'   : 'EEPROM_SmartWheels/If Action Subsystem'
  * '<S2>'   : 'EEPROM_SmartWheels/If Action Subsystem1'
+ * '<S3>'   : 'EEPROM_SmartWheels/If Action Subsystem1/MATLAB Function'
+ * '<S4>'   : 'EEPROM_SmartWheels/If Action Subsystem1/MATLAB Function1'
+ * '<S5>'   : 'EEPROM_SmartWheels/If Action Subsystem1/MATLAB Function2'
  */
 #endif                                 /* EEPROM_SmartWheels_h_ */
 

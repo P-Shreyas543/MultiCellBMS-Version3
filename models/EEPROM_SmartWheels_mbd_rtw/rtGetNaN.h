@@ -1,5 +1,5 @@
 /*
- * File: EEPROM_SmartWheels_data.c
+ * File: rtGetNaN.h
  *
  * Code generated for Simulink model 'EEPROM_SmartWheels'.
  *
@@ -14,12 +14,15 @@
  * Validation result: Not run
  */
 
-#include "EEPROM_SmartWheels.h"
+#ifndef rtGetNaN_h_
+#define rtGetNaN_h_
+#include "rt_nonfinite.h"
+#include "rtwtypes.h"
 
-/* Invariant block signals (default storage) */
-const ConstB_EEPROM_SmartWheels_T EEPROM_SmartWheels_ConstB = {
-  23U                                  /* '<S2>/Width' */
-};
+extern real_T rtGetNaN(void);
+extern real32_T rtGetNaNF(void);
+
+#endif                                 /* rtGetNaN_h_ */
 
 /*
  * File trailer for generated code.

@@ -3,10 +3,10 @@
  *
  * Code generated for Simulink model 'EEPROM_SmartWheels'.
  *
- * Model version                   : 1.85
+ * Model version                   : 1.93
  * Simulink Coder version          : 24.2 (R2024b) 21-Jun-2024
  * MBDT for S32K1xx Series Version : 4.3.0 (R2016a-R2022a) 13-Sep-2022
- * C/C++ source code generated on  : Sat Sep 26 15:42:53 2026
+ * C/C++ source code generated on  : Sat Sep 26 17:03:29 2026
  *
  * Target selection: mbd_s32k.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -15,8 +15,10 @@
  */
 
 #include "EEPROM_SmartWheels.h"
-#include "EEPROM_SmartWheels_private.h"
 #include "rtwtypes.h"
+#include "EEPROM_SmartWheels_private.h"
+#include <math.h>
+#include "rt_nonfinite.h"
 
 lpi2c_master_state_t lpi2cMasterState0;
 void lpi2c_MasterCallback(i2c_master_event_t masterEvent, void *userData)
@@ -29,6 +31,9 @@ B_EEPROM_SmartWheels_T EEPROM_SmartWheels_B;
 static RT_MODEL_EEPROM_SmartWheels_T EEPROM_SmartWheels_M_;
 RT_MODEL_EEPROM_SmartWheels_T *const EEPROM_SmartWheels_M =
   &EEPROM_SmartWheels_M_;
+
+/* Forward declaration for local functions */
+static real_T EEPROM_SmartWheels_mod(real_T x);
 void LPI2C_DRV_SetSlaveAddr(uint16_t addr, bool is10BitAddr)
 {
   LPI2C_Type *baseAddr = LPI2C0;
@@ -45,52 +50,190 @@ void LPUART1_RxTx_callback(void *driverState, uart_event_t event, void *userData
   if (event == UART_EVENT_RX_FULL) {
     /* Output and update for function-call system: '<Root>/If Action Subsystem' */
 
-    /* CFunction: '<S1>/EEPROM_Write' incorporates:
-     *  Constant: '<S1>/Constant'
-     */
-    /* ST M24C04 EEPROM Write Operation */
-    EEPROM_SmartWheels_B.EEPROM_Write = M24C04_Write((1),
-      EEPROM_SmartWheels_B.LPUART_Receive, EEPROM_SmartWheels_ConstB.Width_j);
+    /* CFunction: '<S1>/RTC_SetTime' */
+    /* Write Time to DS3231 */
+    EEPROM_SmartWheels_B.RTC_SetTime = DS3231_SetTimeScalars
+      (EEPROM_SmartWheels_B.LPUART_Receive[0],
+       EEPROM_SmartWheels_B.LPUART_Receive[1],
+       EEPROM_SmartWheels_B.LPUART_Receive[2]);
   }
 
   EEPROM_SmartWheels_B.LPUART_RxTx_ISR_o2 = ((LPUART1)->STAT);
 }
 
+/* Function for MATLAB Function: '<S2>/MATLAB Function' */
+static real_T EEPROM_SmartWheels_mod(real_T x)
+{
+  real_T r;
+  if (rtIsNaN(x)) {
+    r = (rtNaN);
+  } else if (rtIsInf(x)) {
+    r = (rtNaN);
+  } else if (x == 0.0) {
+    r = 0.0;
+  } else {
+    r = fmod(x, 10.0);
+    if (r == 0.0) {
+      r = 0.0;
+    } else if (r < 0.0) {
+      r += 10.0;
+    }
+  }
+
+  return r;
+}
+
+real_T rt_roundd_snf(real_T u)
+{
+  real_T y;
+  if (fabs(u) < 4.503599627370496E+15) {
+    if (u >= 0.5) {
+      y = floor(u + 0.5);
+    } else if (u > -0.5) {
+      y = u * 0.0;
+    } else {
+      y = ceil(u - 0.5);
+    }
+  } else {
+    y = u;
+  }
+
+  return y;
+}
+
+/*
+ * Output and update for atomic system:
+ *    '<S2>/MATLAB Function'
+ *    '<S2>/MATLAB Function1'
+ *    '<S2>/MATLAB Function2'
+ */
+void EEPROM_SmartWhee_MATLABFunction(uint8_T rtu_input, uint8_T rty_ascii[3])
+{
+  real_T tmp;
+  rty_ascii[0] = 0U;
+  rty_ascii[1] = 0U;
+  rty_ascii[2] = 0U;
+  if (rtu_input >= 100) {
+    rty_ascii[0] = (uint8_T)((int32_T)floor((real_T)rtu_input / 100.0) + 48);
+    tmp = rt_roundd_snf(EEPROM_SmartWheels_mod(floor((real_T)rtu_input / 10.0))
+                        + 48.0);
+    if (tmp < 256.0) {
+      if (tmp >= 0.0) {
+        rty_ascii[1] = (uint8_T)tmp;
+      } else {
+        rty_ascii[1] = 0U;
+      }
+    } else {
+      rty_ascii[1] = MAX_uint8_T;
+    }
+
+    tmp = rt_roundd_snf(EEPROM_SmartWheels_mod((real_T)rtu_input) + 48.0);
+    if (tmp < 256.0) {
+      if (tmp >= 0.0) {
+        rty_ascii[2] = (uint8_T)tmp;
+      } else {
+        rty_ascii[2] = 0U;
+      }
+    } else {
+      rty_ascii[2] = MAX_uint8_T;
+    }
+  } else if (rtu_input >= 10) {
+    rty_ascii[0] = (uint8_T)((int32_T)floor((real_T)rtu_input / 10.0) + 48);
+    tmp = rt_roundd_snf(EEPROM_SmartWheels_mod((real_T)rtu_input) + 48.0);
+    if (tmp < 256.0) {
+      if (tmp >= 0.0) {
+        rty_ascii[1] = (uint8_T)tmp;
+      } else {
+        rty_ascii[1] = 0U;
+      }
+    } else {
+      rty_ascii[1] = MAX_uint8_T;
+    }
+  } else {
+    rty_ascii[0] = (uint8_T)(rtu_input + 48);
+  }
+}
+
 /* Model step function */
 void EEPROM_SmartWheels_step(void)
 {
-  /* CFunction: '<Root>/EEPROM_Read' incorporates:
-   *  Constant: '<Root>/Constant'
-   *  Constant: '<Root>/Constant1'
+  uint8_T rtb_ascii[3];
+  uint8_T rtb_ascii_b[3];
+  uint8_T rtb_ascii_l[3];
+
+  /* S-Function (lpuart_s32k_receive): '<Root>/LPUART_Receive' incorporates:
+   *  Constant: '<Root>/Constant2'
    */
-  /* ST M24C04 EEPROM Read Operation */
-  EEPROM_SmartWheels_B.EEPROM_Read_o1 = M24C04_Read((1),
-    EEPROM_SmartWheels_B.EEPROM_Read_o2, (2));
+  {
+    LPUART_DRV_ReceiveData(1, &EEPROM_SmartWheels_B.LPUART_Receive[0], 3U);
+  }
+
+  /* End of Outputs for S-Function (lpuart_s32k_rxtx_isr): '<Root>/LPUART_RxTx_ISR' */
+
+  /* CFunction: '<Root>/RTC_GetTime' */
+  /* Read Time: Hours (0-23), Minutes (0-59), Seconds (0-59) */
+  EEPROM_SmartWheels_B.RTC_GetTime_o1 = DS3231_GetTimeScalars
+    (&EEPROM_SmartWheels_B.RTC_GetTime_o2, &EEPROM_SmartWheels_B.RTC_GetTime_o3,
+     &EEPROM_SmartWheels_B.RTC_GetTime_o4);
 
   /* If: '<Root>/If' */
-  if (EEPROM_SmartWheels_B.EEPROM_Read_o1 == 0) {
+  if (EEPROM_SmartWheels_B.RTC_GetTime_o1 == 0) {
     /* Outputs for IfAction SubSystem: '<Root>/If Action Subsystem1' incorporates:
      *  ActionPort: '<S2>/Action Port'
      */
+    /* MATLAB Function: '<S2>/MATLAB Function' */
+    EEPROM_SmartWhee_MATLABFunction(EEPROM_SmartWheels_B.RTC_GetTime_o2,
+      rtb_ascii_l);
+
+    /* MATLAB Function: '<S2>/MATLAB Function1' */
+    EEPROM_SmartWhee_MATLABFunction(EEPROM_SmartWheels_B.RTC_GetTime_o3,
+      rtb_ascii_b);
+
+    /* MATLAB Function: '<S2>/MATLAB Function2' */
+    EEPROM_SmartWhee_MATLABFunction(EEPROM_SmartWheels_B.RTC_GetTime_o4,
+      rtb_ascii);
+
+    /* SignalConversion generated from: '<S2>/LPUART_Transmit' incorporates:
+     *  Constant: '<S2>/Constant'
+     *  Constant: '<S2>/Constant1'
+     *  Constant: '<S2>/Constant2'
+     *  Constant: '<S2>/Constant3'
+     */
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[0] = 72U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[1] = 72U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[2] = 58U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[3] = 32U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[4] = rtb_ascii_l[0];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[5] = rtb_ascii_l[1];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[6] = rtb_ascii_l[2];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[7] = 77U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[8] = 77U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[9] = 58U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[10] = 32U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[11] = rtb_ascii_b[0];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[12] = rtb_ascii_b[1];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[13] = rtb_ascii_b[2];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[14] = 83U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[15] = 83U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[16] = 58U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[17] = 32U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[18] = rtb_ascii[0];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[19] = rtb_ascii[1];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[20] = rtb_ascii[2];
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[21] = 13U;
+    EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra[22] = 10U;
+
     /* S-Function (lpuart_s32k_transmit): '<S2>/LPUART_Transmit' */
     {
-      LPUART_DRV_SendData(1, &EEPROM_SmartWheels_B.EEPROM_Read_o2[0],
-                          EEPROM_SmartWheels_ConstB.Width);
+      LPUART_DRV_SendData(1,
+                          &EEPROM_SmartWheels_B.TmpSignalConversionAtLPUART_Tra
+                          [0], EEPROM_SmartWheels_ConstB.Width);
     }
 
     /* End of Outputs for SubSystem: '<Root>/If Action Subsystem1' */
   }
 
   /* End of If: '<Root>/If' */
-
-  /* S-Function (lpuart_s32k_receive): '<Root>/LPUART_Receive' incorporates:
-   *  Constant: '<Root>/Constant2'
-   */
-  {
-    LPUART_DRV_ReceiveData(1, &EEPROM_SmartWheels_B.LPUART_Receive[0], 2U);
-  }
-
-  /* End of Outputs for S-Function (lpuart_s32k_rxtx_isr): '<Root>/LPUART_RxTx_ISR' */
 }
 
 /* Model initialize function */

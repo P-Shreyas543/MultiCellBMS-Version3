@@ -70,6 +70,8 @@
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\power_manager.c</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\power_manager_S32K1xx.c</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\power_smc_hw_access.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rtGetNaN.c</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rt_nonfinite.c</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\s32k_clock_init.c</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\startup.c</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\system_S32K144.c</PathName>
@@ -97,6 +99,8 @@
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\pins_gpio_hw_access.h</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\pins_port_hw_access.h</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\power_scg_hw_access.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rtGetNaN.h</PathName>
+      <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rt_nonfinite.h</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rtw_continuous.h</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rtw_solver.h</PathName>
       <PathName>C:\Users\Shreyas\Documents\MultiCell BMS Algorithum Develpment LAB\MultiCellBMS-Version3\models\EEPROM_SmartWheels_mbd_rtw\rtwtypes.h</PathName>

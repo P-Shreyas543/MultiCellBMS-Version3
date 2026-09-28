@@ -85,7 +85,7 @@ BUILD_SUCCESS	= *** Created executable:
 #                            and do not build an executable
 
 MODEL                = EEPROM_SmartWheels
-MODULES              = m24c04.c EEPROM_SmartWheels_data.c mbd_main.c clock_S32K1xx.c edma_driver.c edma_hw_access.c edma_irq.c interrupt_manager.c lin_common.c lin_driver.c lin_irq.c lin_lpuart_driver.c lpi2c_driver.c lpi2c_hw_access.c lpi2c_irq.c lpit_driver.c lpuart_driver.c lpuart_hw_access.c lpuart_irq.c osif_baremetal.c pins_driver.c pins_port_hw_access.c power_manager.c power_manager_S32K1xx.c power_smc_hw_access.c s32k_clock_init.c startup.c system_S32K144.c
+MODULES              = ds3231.c EEPROM_SmartWheels_data.c mbd_main.c rtGetNaN.c rt_nonfinite.c clock_S32K1xx.c edma_driver.c edma_hw_access.c edma_irq.c interrupt_manager.c lin_common.c lin_driver.c lin_irq.c lin_lpuart_driver.c lpi2c_driver.c lpi2c_hw_access.c lpi2c_irq.c lpit_driver.c lpuart_driver.c lpuart_hw_access.c lpuart_irq.c osif_baremetal.c pins_driver.c pins_port_hw_access.c power_manager.c power_manager_S32K1xx.c power_smc_hw_access.c s32k_clock_init.c startup.c system_S32K144.c
 MAKEFILE             = EEPROM_SmartWheels.mk
 MATLAB_ROOT          = C:\Program Files\MATLAB\R2024b
 ALT_MATLAB_ROOT      = C:\PROGRA~1\MATLAB\R2024b
